@@ -7,7 +7,7 @@ Once you have an issue to work on
 1. Take note of the issue number
 2. Create a new branch off of the development branch and use the following naming convention
   
-  <new | bug | update>-<issue-number>-<name of branch>
+  `<new | bug | update>-<issue-number>-<name of branch>`
   
   for example an issue to create a new server file with an issue number of 10 would mean you should create a branch called, something like
   new-10-server-file
