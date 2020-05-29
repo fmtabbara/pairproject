@@ -1,18 +1,15 @@
-
 const isValidTodo = (todo) => {
-    if (
-        todo === null || 
-        todo === undefined || 
-        todo.length === 0 || 
-        todo.length > 100
-        ) {
+  if (
+    todo === null ||
+    todo === undefined ||
+    todo.length === 0 ||
+    todo.length > 100
+  ) {
     return false
-        } else {
+  } else {
     return true
-}
+  }
 }
 
+module.exports = { isValidTodo }
 
-module.exports = {
-    isValidTodo
-}
