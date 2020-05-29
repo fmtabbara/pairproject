@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const { v4: uuid } = require('uuid')
-const { isValidtodo } = require('./validation')
+const { isValidTodo } = require('./validation')
 
 const app = express()
 const PORT = 3000
@@ -12,7 +12,7 @@ app.get('/todos', (req, res) => res.send('list of todos'))
 
 app.post('/addtodo', (req, res) => {
   const todo = req.body
-  const isValid = isValidtodo(todo.name)
+  const isValid = isValidTodo(todo.name)
 
   if (isValid) {
   todo.id = uuid()

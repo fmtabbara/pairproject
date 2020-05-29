@@ -1,5 +1,5 @@
 
-const isValidtodo = (todo) => {
+const isValidTodo = (todo) => {
     if (
         todo === null || 
         todo === undefined || 
@@ -14,5 +14,5 @@ const isValidtodo = (todo) => {
 
 
 module.exports = {
-    isValidtodo
+    isValidTodo
 }
