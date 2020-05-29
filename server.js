@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const { v4: uuid } = require('uuid')
+const { isValidTodo } = require('./validation')
 
 const app = express()
 const PORT = 3000
@@ -91,11 +92,14 @@ app.get('/users/:userid/todos', (req, res) => {
 app.post('/users/:userid/todo', (req, res) => {
   const { userid } = req.params
   const name = req.body
-  const todo = new Todo({ userid, name, id: uuid() })
-
-  todos.unshift(todo)
-
-  res.redirect(`/users/${userid}/todos`)
+  const isValid = isValidTodo(name)
+  if (isValid) {
+    const todo = new Todo({ userid, name, id: uuid() })
+    todos.unshift(todo)
+    res.redirect(`/users/${userid}/todos`)
+  } else {
+    return res.status(400).send('invalid todo')
+  }
 })
 
 // PATCH
@@ -137,5 +141,6 @@ app.delete('/users/:userid/todo/:todoid', (req, res) => {
 
 app.use(function (req, res, next) {
   res.status(404).send("Sorry can't find that!")
-})
+}
+
 app.listen(PORT, () => console.log(`Server is running on port: ${PORT}`))
