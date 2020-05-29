@@ -1,6 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const { v4: uuid } = require('uuid')
+const { isValidTodo } = require('./validation')
 
 const app = express()
 const PORT = 3000
@@ -78,9 +79,9 @@ app.get('/users/:userid/todos', (req, res) => {
   const matches = todos.filter(({ userid: id }) => id === +userid)
 
   if (matches.length > 0) {
-    res.send(matches)
+    return res.send(matches)
   } else {
-    res.send('No todos')
+    return res.send('No todos')
   }
 })
 
@@ -91,11 +92,15 @@ app.get('/users/:userid/todos', (req, res) => {
 app.post('/users/:userid/todo', (req, res) => {
   const { userid } = req.params
   const name = req.body
-  const todo = new Todo({ userid, name, id: uuid() })
-
-  todos.unshift(todo)
-
-  res.redirect(303, `/users/${userid}/todos`)
+  const isValid = isValidTodo(name)
+  
+  if (isValid) {
+    const todo = new Todo({ userid, name, id: uuid() })
+    todos.unshift(todo)
+    return res.redirect(303, `/users/${userid}/todos`)
+  } else {
+    return res.status(400).send('invalid todo')
+  }
 })
 
 // PATCH
@@ -111,7 +116,7 @@ app.patch('/users/:userid/todo/:todoid', (req, res) => {
   )
 
   todos = [...updatedTodos]
-  res.redirect(303, `/users/${userid}/todos`)
+  return res.redirect(303, `/users/${userid}/todos`)
 })
 
 // DELETE
@@ -129,14 +134,15 @@ app.delete('/users/:userid/todo/:todoid', (req, res) => {
     const updatedTodos = [...todos]
     updatedTodos.splice(indexOfTodo, 1)
     todos = [...updatedTodos]
-    res.redirect(303, `/users/${userid}/todos`)
+    return res.redirect(303, `/users/${userid}/todos`)
   } else {
-    res.status(403).send('Sorry not able to delete todo')
+    return res.status(403).send('Sorry not able to delete todo')
   }
 })
 
 app.use(function (req, res, next) {
   res.status(404).send("Sorry can't find that!")
 })
+
 
 app.listen(PORT, () => console.log(`Server is running on port: ${PORT}`))
