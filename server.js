@@ -95,7 +95,7 @@ app.post('/users/:userid/todo', (req, res) => {
 
   todos.unshift(todo)
 
-  res.redirect(`/users/${userid}/todos`)
+  res.redirect(303, `/users/${userid}/todos`)
 })
 
 // PATCH
@@ -111,7 +111,7 @@ app.patch('/users/:userid/todo/:todoid', (req, res) => {
   )
 
   todos = [...updatedTodos]
-  res.redirect(`/users/${userid}/todos`)
+  res.redirect(303, `/users/${userid}/todos`)
 })
 
 // DELETE
@@ -129,7 +129,7 @@ app.delete('/users/:userid/todo/:todoid', (req, res) => {
     const updatedTodos = [...todos]
     updatedTodos.splice(indexOfTodo, 1)
     todos = [...updatedTodos]
-    res.redirect(`/users/${userid}/todos`)
+    res.redirect(303, `/users/${userid}/todos`)
   } else {
     res.status(403).send('Sorry not able to delete todo')
   }
@@ -138,4 +138,5 @@ app.delete('/users/:userid/todo/:todoid', (req, res) => {
 app.use(function (req, res, next) {
   res.status(404).send("Sorry can't find that!")
 })
+
 app.listen(PORT, () => console.log(`Server is running on port: ${PORT}`))
