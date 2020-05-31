@@ -93,7 +93,7 @@ app.post('/users/:userid/todo', (req, res) => {
   const { userid } = req.params
   const name = req.body
   const isValid = isValidTodo(name)
-  
+
   if (isValid) {
     const todo = new Todo({ userid, name, id: uuid() })
     todos.unshift(todo)
@@ -104,19 +104,40 @@ app.post('/users/:userid/todo', (req, res) => {
 })
 
 // PATCH
-// Update a todo with status and/or name for a given user
+// Update a todo with status for a given user
 // ** Needs validation added **
 
-app.patch('/users/:userid/todo/:todoid', (req, res) => {
+app.patch('/users/:userid/todo/:todoid/complete', (req, res) => {
   const { todoid, userid } = req.params
-  const { complete, name } = req.body
+  const { complete } = req.body
 
   const updatedTodos = todos.map((t) =>
-    t.id === todoid ? { ...t, complete, name } : { ...t }
+    t.id === todoid ? { ...t, complete } : { ...t }
   )
 
   todos = [...updatedTodos]
   return res.redirect(303, `/users/${userid}/todos`)
+})
+
+// PATCH
+// Update a todo name for a given user
+// ** Needs validation added **
+
+app.patch('/users/:userid/todo/:todoid', (req, res) => {
+  const { todoid, userid } = req.params
+  const { name } = req.body
+  const isValidName = isValidTodo(name)
+
+  if (isValidName) {
+    const updatedTodos = todos.map((t) =>
+      t.id === todoid ? { ...t, name } : { ...t }
+    )
+
+    todos = [...updatedTodos]
+    return res.redirect(303, `/users/${userid}/todos`)
+  } else {
+    return res.status(403).send('Sorry not able to update todo')
+  }
 })
 
 // DELETE
@@ -143,6 +164,5 @@ app.delete('/users/:userid/todo/:todoid', (req, res) => {
 app.use(function (req, res, next) {
   res.status(404).send("Sorry can't find that!")
 })
-
 
 app.listen(PORT, () => console.log(`Server is running on port: ${PORT}`))
