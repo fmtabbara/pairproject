@@ -111,7 +111,7 @@ app.patch('/users/:userid/todo/:todoid/complete', (req, res) => {
   const validComplete = validComplete(complete)
   if (validComplete) {
     const updatedTodos = todos.map((t) =>
-      t.id === todoid ? { ...t, complete } : { ...t }
+      t.id === todoid && t.userid === userid ? { ...t, complete } : { ...t }
     )
 
     todos = [...updatedTodos]
@@ -131,7 +131,7 @@ app.patch('/users/:userid/todo/:todoid', (req, res) => {
 
   if (isValidName) {
     const updatedTodos = todos.map((t) =>
-      t.id === todoid ? { ...t, name } : { ...t }
+      t.id === todoid && t.userid === userid ? { ...t, name } : { ...t }
     )
 
     todos = [...updatedTodos]
