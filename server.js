@@ -1,7 +1,7 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const { v4: uuid } = require('uuid')
-const { isValidTodo } = require('./validation')
+const { isValidTodo, validComplete } = require('./validation')
 
 const app = express()
 const PORT = 3000
@@ -111,12 +111,18 @@ app.patch('/users/:userid/todo/:todoid/complete', (req, res) => {
   const { todoid, userid } = req.params
   const { complete } = req.body
 
-  const updatedTodos = todos.map((t) =>
-    t.id === todoid ? { ...t, complete } : { ...t }
-  )
+  //passing the validPatch here, not sure how to do this section:
+  const validComplete = validComplete(complete)
+  if (validComplete) {
+    const updatedTodos = todos.map((t) =>
+      t.id === todoid ? { ...t, complete } : { ...t }
+    )
 
-  todos = [...updatedTodos]
-  return res.redirect(303, `/users/${userid}/todos`)
+    todos = [...updatedTodos]
+    return res.redirect(303, `/users/${userid}/todos`)
+  } else {
+    return res.status(400).send('invalid todo')
+  }
 })
 
 // PATCH
@@ -127,6 +133,10 @@ app.patch('/users/:userid/todo/:todoid', (req, res) => {
   const { todoid, userid } = req.params
   const { name } = req.body
   const isValidName = isValidTodo(name)
+
+  //need to pass the validPatch here, not sure how to do this section:
+
+  const validPatch = istodoBoolean(name)
 
   if (isValidName) {
     const updatedTodos = todos.map((t) =>

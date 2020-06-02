@@ -11,5 +11,10 @@ const isValidTodo = (todo) => {
   }
 }
 
-module.exports = { isValidTodo }
+const validComplete = (complete) =>
+  typeof complete === 'boolean' ? true : false
 
+module.exports = {
+  isValidTodo,
+  validComplete,
+}
