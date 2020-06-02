@@ -4,7 +4,7 @@ const { v4: uuid } = require('uuid')
 const { isValidTodo, validComplete } = require('./validation')
 
 const app = express()
-const PORT = 3000
+const PORT = 3001
 
 app.use(bodyParser.json())
 
