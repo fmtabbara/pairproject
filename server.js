@@ -71,7 +71,6 @@ let todos = [
 
 // GET
 // Fetch all todos for a given user
-// ** Needs validation added **
 
 app.get('/users/:userid/todos', (req, res) => {
   const { userid } = req.params
@@ -87,7 +86,6 @@ app.get('/users/:userid/todos', (req, res) => {
 
 // POST
 // Add a new todo for a given user
-// ** Needs validation added **
 
 app.post('/users/:userid/todo', (req, res) => {
   const { userid } = req.params
@@ -105,13 +103,11 @@ app.post('/users/:userid/todo', (req, res) => {
 
 // PATCH
 // Update a todo with status for a given user
-// ** Needs validation added **
 
 app.patch('/users/:userid/todo/:todoid/complete', (req, res) => {
   const { todoid, userid } = req.params
   const { complete } = req.body
 
-  //passing the validPatch here, not sure how to do this section:
   const validComplete = validComplete(complete)
   if (validComplete) {
     const updatedTodos = todos.map((t) =>
@@ -127,16 +123,11 @@ app.patch('/users/:userid/todo/:todoid/complete', (req, res) => {
 
 // PATCH
 // Update a todo name for a given user
-// ** Needs validation added **
 
 app.patch('/users/:userid/todo/:todoid', (req, res) => {
   const { todoid, userid } = req.params
   const { name } = req.body
   const isValidName = isValidTodo(name)
-
-  //need to pass the validPatch here, not sure how to do this section:
-
-  const validPatch = istodoBoolean(name)
 
   if (isValidName) {
     const updatedTodos = todos.map((t) =>
@@ -152,7 +143,6 @@ app.patch('/users/:userid/todo/:todoid', (req, res) => {
 
 // DELETE
 // Delete a todo for a given user
-// ** Needs validation added **
 
 app.delete('/users/:userid/todo/:todoid', (req, res) => {
   const { userid, todoid } = req.params
