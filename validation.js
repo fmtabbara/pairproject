@@ -1,5 +1,6 @@
 const isValidTodo = (todo) => {
   if (
+    typeof todo !== 'string' ||
     todo === null ||
     todo === undefined ||
     todo.length === 0 ||
