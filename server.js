@@ -84,37 +84,34 @@ app.get('/users/:userid/todos', (req, res) => {
   }
 })
 
+// GET
+// Fetch single todo for a given user
+
+app.get('/users/:userid/todos/:todoid', (req, res) => {
+  const { userid, todoid } = req.params
+
+  const [match] = todos.filter((t) => {
+    return t.userid === +userid && t.id === todoid
+  })
+
+  if (match) {
+    return res.send(match)
+  } else {
+    return res.send('Nothing found')
+  }
+})
+
 // POST
 // Add a new todo for a given user
 
 app.post('/users/:userid/todo', (req, res) => {
   const { userid } = req.params
-  const name = req.body
+  const { name } = req.body
   const isValid = isValidTodo(name)
 
   if (isValid) {
     const todo = new Todo({ userid, name, id: uuid() })
     todos.unshift(todo)
-    return res.redirect(303, `/users/${userid}/todos`)
-  } else {
-    return res.status(400).send('invalid todo')
-  }
-})
-
-// PATCH
-// Update a todo with status for a given user
-
-app.patch('/users/:userid/todo/:todoid/complete', (req, res) => {
-  const { todoid, userid } = req.params
-  const { complete } = req.body
-
-  const validComplete = validComplete(complete)
-  if (validComplete) {
-    const updatedTodos = todos.map((t) =>
-      t.id === todoid && t.userid === userid ? { ...t, complete } : { ...t }
-    )
-
-    todos = [...updatedTodos]
     return res.redirect(303, `/users/${userid}/todos`)
   } else {
     return res.status(400).send('invalid todo')
@@ -128,10 +125,17 @@ app.patch('/users/:userid/todo/:todoid', (req, res) => {
   const { todoid, userid } = req.params
   const { name } = req.body
   const isValidName = isValidTodo(name)
+  const indexOfTodo = todos.findIndex(
+    ({ id, userid: uid }) => id === todoid && +userid === uid
+  )
+
+  if (indexOfTodo === -1) {
+    return res.status(403).send("Sorry couldn't find that todo")
+  }
 
   if (isValidName) {
     const updatedTodos = todos.map((t) =>
-      t.id === todoid && t.userid === userid ? { ...t, name } : { ...t }
+      t.id === todoid && t.userid === +userid ? { ...t, name } : { ...t }
     )
 
     todos = [...updatedTodos]
@@ -141,20 +145,48 @@ app.patch('/users/:userid/todo/:todoid', (req, res) => {
   }
 })
 
+// PATCH
+// Update a todo with status for a given user
+
+app.patch('/users/:userid/todo/:todoid/complete', (req, res) => {
+  const { todoid, userid } = req.params
+  const { complete } = req.body
+  const isValid = validComplete(complete)
+  const indexOfTodo = todos.findIndex(
+    ({ id, userid: uid }) => id === todoid && +userid === uid
+  )
+
+  if (indexOfTodo === -1) {
+    return res.status(403).send("Sorry couldn't find that todo")
+  }
+  if (isValid) {
+    const updatedTodos = todos.map((t) =>
+      t.id === todoid && t.userid === userid ? { ...t, complete } : { ...t }
+    )
+
+    todos = [...updatedTodos]
+    return res.redirect(303, `/users/${userid}/todos`)
+  } else {
+    return res.status(400).send('invalid request')
+  }
+})
+
 // DELETE
 // Delete a todo for a given user
 
 app.delete('/users/:userid/todo/:todoid', (req, res) => {
   const { userid, todoid } = req.params
 
-  const indexOfTodo = todos.findIndex(
+  const indexOfTodo = todos.findIIndex(
     ({ id, userid: uid }) => id === todoid && +userid === uid
   )
 
   if (indexOfTodo !== -1) {
     const updatedTodos = [...todos]
+
     updatedTodos.splice(indexOfTodo, 1)
     todos = [...updatedTodos]
+
     return res.redirect(303, `/users/${userid}/todos`)
   } else {
     return res.status(403).send('Sorry not able to delete todo')
