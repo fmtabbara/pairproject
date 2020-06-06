@@ -3,16 +3,17 @@ const bodyParser = require('body-parser')
 const { v4: uuid } = require('uuid')
 const { isValidTodo, validComplete } = require('./validation')
 const knex = require('knex')
+require('dotenv').config()
 
 const app = express()
-const PORT = 3001
+const PORT = process.env.SERVER_PORT || 3001
 
 const db = knex({
   client: 'pg',
   connection: {
-    port: 4000,
+    port: process.env.DB_PORT,
     user: 'postgres',
-    password: 'admin',
+    password: process.env.DB_PASSWORD,
     database: 'pairproject',
   },
 })
