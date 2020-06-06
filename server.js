@@ -2,9 +2,22 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const { v4: uuid } = require('uuid')
 const { isValidTodo, validComplete } = require('./validation')
+const knex = require('knex')
 
 const app = express()
 const PORT = 3001
+
+const db = knex({
+  client: 'pg',
+  connection: {
+    host: '127.0.0.1',
+    user: 'postgres',
+    password: 'kevin.20',
+    database: 'pairproject',
+  },
+})
+
+console.log(db.select('*').from('users'))
 
 app.use(bodyParser.json())
 
@@ -91,6 +104,7 @@ app.get('/users/:userid/todos/:todoid', (req, res) => {
   const { userid, todoid } = req.params
 
   const [match] = todos.filter((t) => {
+    //Ask Fouad about this function?
     return t.userid === +userid && t.id === todoid
   })
 
@@ -107,12 +121,17 @@ app.get('/users/:userid/todos/:todoid', (req, res) => {
 app.post('/users/:userid/todo', (req, res) => {
   const { userid } = req.params
   const { name } = req.body
+  db('users')
+    .insert({
+      name: name,
+    })
+    .then(console.log)
   const isValid = isValidTodo(name)
 
   if (isValid) {
     const todo = new Todo({ userid, name, id: uuid() })
     todos.unshift(todo)
-    return res.redirect(303, `/users/${userid}/todos`)
+    return res.redirect(303, `/users/${userid}/todos`) //what is this line??
   } else {
     return res.status(400).send('invalid todo')
   }
@@ -134,8 +153,9 @@ app.patch('/users/:userid/todo/:todoid', (req, res) => {
   }
 
   if (isValidName) {
-    const updatedTodos = todos.map((t) =>
-      t.id === todoid && t.userid === +userid ? { ...t, name } : { ...t }
+    const updatedTodos = todos.map(
+      (t) =>
+        t.id === todoid && t.userid === +userid ? { ...t, name } : { ...t } //what we are saying in this line??
     )
 
     todos = [...updatedTodos]
@@ -177,7 +197,7 @@ app.patch('/users/:userid/todo/:todoid/complete', (req, res) => {
 app.delete('/users/:userid/todo/:todoid', (req, res) => {
   const { userid, todoid } = req.params
 
-  const indexOfTodo = todos.findIIndex(
+  const indexOfTodo = todos.findIndex(
     ({ id, userid: uid }) => id === todoid && +userid === uid
   )
 
@@ -194,6 +214,7 @@ app.delete('/users/:userid/todo/:todoid', (req, res) => {
 })
 
 app.use(function (req, res, next) {
+  //is app.use a middleware and why we using it here??
   res.status(404).send("Sorry can't find that!")
 })
 
