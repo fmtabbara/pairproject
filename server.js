@@ -10,14 +10,12 @@ const PORT = 3001
 const db = knex({
   client: 'pg',
   connection: {
-    host: '127.0.0.1',
+    port: 4000,
     user: 'postgres',
-    password: 'kevin.20',
+    password: 'admin',
     database: 'pairproject',
   },
 })
-
-console.log(db.select('*').from('users'))
 
 app.use(bodyParser.json())
 
@@ -28,73 +26,26 @@ function Todo({ id, userid, name }) {
   this.userid = +userid
 }
 
-const users = [
-  {
-    id: 1,
-    name: 'user_1',
-  },
-  {
-    id: 2,
-    name: 'user_2',
-  },
-  {
-    id: 10,
-    name: 'user_10',
-  },
-]
-
-let todos = [
-  {
-    id: uuid(),
-    name: 'tidy bedroom',
-    complete: true,
-    userid: 1,
-  },
-  {
-    id: uuid(),
-    name: 'tidy front room',
-    complete: false,
-    userid: 1,
-  },
-  {
-    id: uuid(),
-    name: 'complete routes for app',
-    complete: false,
-    userid: 1,
-  },
-  {
-    id: uuid(),
-    name: 'write validator function',
-    complete: false,
-    userid: 2,
-  },
-  {
-    id: uuid(),
-    name: 'learn how to write routes',
-    complete: false,
-    userid: 2,
-  },
-  {
-    id: uuid(),
-    name: 'go for a long walk',
-    complete: false,
-    userid: 3,
-  },
-]
-
 // GET
 // Fetch all todos for a given user
 
 app.get('/users/:userid/todos', (req, res) => {
   const { userid } = req.params
 
-  const matches = todos.filter(({ userid: id }) => id === +userid)
+  // const matches = todos.filter(({ userid: id }) => id === +userid)
 
-  if (matches.length > 0) {
-    return res.send(matches)
-  } else {
-    return res.send('No todos')
-  }
+  db('todos')
+    .where({
+      userid: +userid,
+    })
+    .then((results) => {
+      if (results.length > 0) {
+        return res.send(results)
+      } else {
+        return res.send('No todos')
+      }
+    })
+    .catch((e) => console.log(e))
 })
 
 // GET
@@ -103,16 +54,19 @@ app.get('/users/:userid/todos', (req, res) => {
 app.get('/users/:userid/todos/:todoid', (req, res) => {
   const { userid, todoid } = req.params
 
-  const [match] = todos.filter((t) => {
-    //Ask Fouad about this function?
-    return t.userid === +userid && t.id === todoid
-  })
-
-  if (match) {
-    return res.send(match)
-  } else {
-    return res.send('Nothing found')
-  }
+  db('todos')
+    .where({
+      userid: +userid,
+      id: todoid,
+    })
+    .then((result) => {
+      if (result) {
+        return res.send(result)
+      } else {
+        return res.send('Nothing found')
+      }
+    })
+    .catch(() => res.send(e))
 })
 
 // POST
@@ -121,16 +75,13 @@ app.get('/users/:userid/todos/:todoid', (req, res) => {
 app.post('/users/:userid/todo', (req, res) => {
   const { userid } = req.params
   const { name } = req.body
-  db('users')
-    .insert({
-      name: name,
-    })
-    .then(console.log)
+
   const isValid = isValidTodo(name)
 
   if (isValid) {
     const todo = new Todo({ userid, name, id: uuid() })
     todos.unshift(todo)
+    db('todos').insert(todo).then(console.log('done'))
     return res.redirect(303, `/users/${userid}/todos`) //what is this line??
   } else {
     return res.status(400).send('invalid todo')
@@ -214,7 +165,6 @@ app.delete('/users/:userid/todo/:todoid', (req, res) => {
 })
 
 app.use(function (req, res, next) {
-  //is app.use a middleware and why we using it here??
   res.status(404).send("Sorry can't find that!")
 })
 
