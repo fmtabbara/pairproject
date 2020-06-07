@@ -33,18 +33,7 @@ function Todo({ id, userid, name }) {
 app.get('/users/:userid/todos', (req, res) => {
   const { userid } = req.params
 
-  db('todos')
-    .where({
-      userid: +userid,
-    })
-    .then((results) => {
-      if (results.length > 0) {
-        return res.send(results)
-      } else {
-        return res.send('No todos')
-      }
-    })
-    .catch((e) => console.log(e))
+  // to be completed
 })
 
 // GET
@@ -53,19 +42,7 @@ app.get('/users/:userid/todos', (req, res) => {
 app.get('/users/:userid/todos/:todoid', (req, res) => {
   const { userid, todoid } = req.params
 
-  db('todos')
-    .where({
-      userid: +userid,
-      id: todoid,
-    })
-    .then((result) => {
-      if (result) {
-        return res.send(result)
-      } else {
-        return res.send('Nothing found')
-      }
-    })
-    .catch(() => res.send(e))
+  // to be completed
 })
 
 // POST
@@ -76,21 +53,7 @@ app.post('/users/:userid/todo', (req, res) => {
   const { name } = req.body
   const isValid = isValidTodo(name)
 
-  if (isValid) {
-    const todo = new Todo({ userid, name, id: uuid() })
-
-    db('todos')
-      .insert(todo)
-      .then((results) => {
-        if (results === 0) {
-          res.status(403).send('Sorry todo not found')
-        } else {
-          res.redirect(303, `/users/${userid}/todos`)
-        }
-      })
-  } else {
-    return res.status(400).send('invalid todo')
-  }
+  // to be completed
 })
 
 // PATCH
