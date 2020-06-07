@@ -155,20 +155,21 @@ app.patch('/users/:userid/todo/:todoid/complete', (req, res) => {
 app.delete('/users/:userid/todo/:todoid', (req, res) => {
   const { userid, todoid } = req.params
 
-  const indexOfTodo = todos.findIndex(
-    ({ id, userid: uid }) => id === todoid && +userid === uid
-  )
-
-  if (indexOfTodo !== -1) {
-    const updatedTodos = [...todos]
-
-    updatedTodos.splice(indexOfTodo, 1)
-    todos = [...updatedTodos]
-
-    return res.redirect(303, `/users/${userid}/todos`)
-  } else {
-    return res.status(403).send('Sorry not able to delete todo')
-  }
+  db('todos')
+    .del()
+    .where({
+      userid: +userid,
+      id: todoid,
+    })
+    .then((result) => {
+      if (result === 0) {
+        console.log(result)
+        return res.send('unable to delete todo')
+      } else {
+        res.redirect(303, `/users/${userid}/todos`)
+      }
+    })
+    .catch((e) => res.send(e))
 })
 
 app.use(function (req, res, next) {
