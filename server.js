@@ -17,8 +17,6 @@ const db = knex({
   },
 })
 
-console.log(db.select('*').from('users'))
-
 app.use(bodyParser.json())
 
 function Todo({ id, userid, name }) {
@@ -104,7 +102,6 @@ app.get('/users/:userid/todos/:todoid', (req, res) => {
   const { userid, todoid } = req.params
 
   const [match] = todos.filter((t) => {
-    //Ask Fouad about this function?
     return t.userid === +userid && t.id === todoid
   })
 
@@ -121,17 +118,19 @@ app.get('/users/:userid/todos/:todoid', (req, res) => {
 app.post('/users/:userid/todo', (req, res) => {
   const { userid } = req.params
   const { name } = req.body
-  db('users')
-    .insert({
-      name: name,
-    })
-    .then(console.log)
   const isValid = isValidTodo(name)
 
   if (isValid) {
     const todo = new Todo({ userid, name, id: uuid() })
-    todos.unshift(todo)
-    return res.redirect(303, `/users/${userid}/todos`) //what is this line??
+    db('todos')
+      .insert(todo)
+      .then((results) => {
+        if (results === 0) {
+          res.status(403).send('sorry todo not found')
+        } else {
+          res.redirect(303, `/users/${userid}/todos`)
+        }
+      })
   } else {
     return res.status(400).send('invalid todo')
   }
@@ -214,7 +213,7 @@ app.delete('/users/:userid/todo/:todoid', (req, res) => {
 })
 
 app.use(function (req, res, next) {
-  //is app.use a middleware and why we using it here??
+  //app.use a middleware and why we using it a fallback for a route.
   res.status(404).send("Sorry can't find that!")
 })
 
