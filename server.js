@@ -33,8 +33,6 @@ function Todo({ id, userid, name }) {
 app.get('/users/:userid/todos', (req, res) => {
   const { userid } = req.params
 
-  // const matches = todos.filter(({ userid: id }) => id === +userid)
-
   db('todos')
     .where({
       userid: +userid,
@@ -76,14 +74,14 @@ app.get('/users/:userid/todos/:todoid', (req, res) => {
 app.post('/users/:userid/todo', (req, res) => {
   const { userid } = req.params
   const { name } = req.body
-
   const isValid = isValidTodo(name)
 
   if (isValid) {
     const todo = new Todo({ userid, name, id: uuid() })
-    todos.unshift(todo)
-    db('todos').insert(todo).then(console.log('done'))
-    return res.redirect(303, `/users/${userid}/todos`) //what is this line??
+
+    db('todos')
+      .insert(todo)
+      .then(() => res.redirect(303, `/users/${userid}/todos`))
   } else {
     return res.status(400).send('invalid todo')
   }
