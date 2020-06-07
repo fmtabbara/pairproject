@@ -81,7 +81,13 @@ app.post('/users/:userid/todo', (req, res) => {
 
     db('todos')
       .insert(todo)
-      .then(() => res.redirect(303, `/users/${userid}/todos`))
+      .then((results) => {
+        if (results === 0) {
+          res.status(403).send('Sorry todo not found')
+        } else {
+          res.redirect(303, `/users/${userid}/todos`)
+        }
+      })
   } else {
     return res.status(400).send('invalid todo')
   }
@@ -94,22 +100,22 @@ app.patch('/users/:userid/todo/:todoid', (req, res) => {
   const { todoid, userid } = req.params
   const { name } = req.body
   const isValidName = isValidTodo(name)
-  const indexOfTodo = todos.findIndex(
-    ({ id, userid: uid }) => id === todoid && +userid === uid
-  )
-
-  if (indexOfTodo === -1) {
-    return res.status(403).send("Sorry couldn't find that todo")
-  }
 
   if (isValidName) {
-    const updatedTodos = todos.map(
-      (t) =>
-        t.id === todoid && t.userid === +userid ? { ...t, name } : { ...t } //what we are saying in this line??
-    )
-
-    todos = [...updatedTodos]
-    return res.redirect(303, `/users/${userid}/todos`)
+    db('todos')
+      .update({ name })
+      .where({
+        userid: +userid,
+        id: todoid,
+      })
+      .then((results) => {
+        if (results === 0) {
+          res.status(403).send('Sorry todo not found')
+        } else {
+          res.redirect(303, `/users/${userid}/todos`)
+        }
+      })
+      .catch((e) => res.status(400).send(e))
   } else {
     return res.status(403).send('Sorry not able to update todo')
   }
@@ -122,22 +128,24 @@ app.patch('/users/:userid/todo/:todoid/complete', (req, res) => {
   const { todoid, userid } = req.params
   const { complete } = req.body
   const isValid = validComplete(complete)
-  const indexOfTodo = todos.findIndex(
-    ({ id, userid: uid }) => id === todoid && +userid === uid
-  )
 
-  if (indexOfTodo === -1) {
-    return res.status(403).send("Sorry couldn't find that todo")
-  }
   if (isValid) {
-    const updatedTodos = todos.map((t) =>
-      t.id === todoid && t.userid === userid ? { ...t, complete } : { ...t }
-    )
-
-    todos = [...updatedTodos]
-    return res.redirect(303, `/users/${userid}/todos`)
+    db('todos')
+      .update({ complete })
+      .where({
+        userid: +userid,
+        id: todoid,
+      })
+      .then((results) => {
+        if (results === 0) {
+          res.status(403).send('Sorry todo not found')
+        } else {
+          res.redirect(303, `/users/${userid}/todos`)
+        }
+      })
+      .catch((e) => res.status(400).send(e))
   } else {
-    return res.status(400).send('invalid request')
+    return res.status(403).send('Sorry not able to update todo')
   }
 })
 
