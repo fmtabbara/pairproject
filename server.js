@@ -85,31 +85,39 @@ let todos = [
 
 app.get('/users/:userid/todos', (req, res) => {
   const { userid } = req.params
-
-  const matches = todos.filter(({ userid: id }) => id === +userid)
-
-  if (matches.length > 0) {
-    return res.send(matches)
-  } else {
-    return res.send('No todos')
-  }
+  db('todos')
+    .where({
+      userid: +userid,
+    })
+    .then((results) => {
+      if (results.length > 0) {
+        return res.send(results)
+      } else {
+        return res.send('No todos')
+      }
+    })
+    .catch((e) => console.log(e))
 })
 
 // GET
 // Fetch single todo for a given user
 
-app.get('/users/:userid/todos/:todoid', (req, res) => {
+app.get('/users/:userid/todo/:todoid', (req, res) => {
   const { userid, todoid } = req.params
-
-  const [match] = todos.filter((t) => {
-    return t.userid === +userid && t.id === todoid
-  })
-
-  if (match) {
-    return res.send(match)
-  } else {
-    return res.send('Nothing found')
-  }
+  db('todos')
+    .where({
+      userid: +userid,
+      id: todoid,
+    })
+    .then((result) => {
+      //.then is a promise and we always need this to return data from database to fron end.
+      if (result) {
+        return res.send(result)
+      } else {
+        return res.send('Nothing found')
+      }
+    })
+    .catch((e) => res.send(e))
 })
 
 // POST
