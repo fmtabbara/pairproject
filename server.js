@@ -33,16 +33,41 @@ function Todo({ id, userid, name }) {
 app.get('/users/:userid/todos', (req, res) => {
   const { userid } = req.params
 
-  // to be completed
+  db('todos')
+    .where({
+      userid: +userid,
+    })
+    .then((results) => {
+      if (results.length > 0) {
+        return res.send(results)
+      } else {
+        return res.send('No todos')
+      }
+    })
+    .catch((e) => console.log(e))
+
 })
 
 // GET
 // Fetch single todo for a given user
 
-app.get('/users/:userid/todos/:todoid', (req, res) => {
+app.get('/users/:userid/todo/:todoid', (req, res) => {
   const { userid, todoid } = req.params
 
-  // to be completed
+  db('todos')
+    .where({
+      userid: +userid,
+      id: todoid,
+    })
+    .then((result) => {
+      //.then is a promise and we always need this to return data from database to fron end.
+      if (result) {
+        return res.send(result)
+      } else {
+        return res.send('Nothing found')
+      }
+    })
+    .catch((e) => res.send(e))
 })
 
 // POST
@@ -53,7 +78,20 @@ app.post('/users/:userid/todo', (req, res) => {
   const { name } = req.body
   const isValid = isValidTodo(name)
 
-  // to be completed
+  if (isValid) {
+    const todo = new Todo({ userid, name, id: uuid() })
+    db('todos')
+      .insert(todo)
+      .then((results) => {
+        if (results === 0) {
+          res.status(403).send('sorry todo not found')
+        } else {
+          res.redirect(303, `/users/${userid}/todos`)
+        }
+      })
+  } else {
+    return res.status(400).send('invalid todo')
+  }
 })
 
 // PATCH
