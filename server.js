@@ -4,18 +4,14 @@ const { v4: uuid } = require('uuid')
 const { isValidTodo, validComplete } = require('./validation')
 const knex = require('knex')
 require('dotenv').config()
+const { connection } = require('./db')
 
 const app = express()
-const PORT = process.env.SERVER_PORT || 3001
+const PORT = process.env.PORT || 3001
 
 const db = knex({
   client: 'pg',
-  connection: {
-    port: process.env.DB_PORT,
-    user: 'postgres',
-    password: process.env.DB_PASSWORD,
-    database: 'pairproject',
-  },
+  connection,
 })
 
 app.use(bodyParser.json())
@@ -45,7 +41,6 @@ app.get('/users/:userid/todos', (req, res) => {
       }
     })
     .catch((e) => console.log(e))
-
 })
 
 // GET
@@ -60,8 +55,7 @@ app.get('/users/:userid/todo/:todoid', (req, res) => {
       id: todoid,
     })
     .then((result) => {
-      //.then is a promise and we always need this to return data from database to fron end.
-      if (result) {
+      if (result.length !== 0) {
         return res.send(result)
       } else {
         return res.send('Nothing found')
