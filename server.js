@@ -27,6 +27,18 @@ app.use(
   userRoutes
 )
 
+app.use('/register', (req, res) => {
+  res.send('registration route')
+})
+
+app.use('/login', (req, res) => {
+  res.send('login route')
+})
+
+app.use('/logout', (req, res) => {
+  res.send('logout route')
+})
+
 // Fallback route
 
 app.use(function (req, res, next) {
