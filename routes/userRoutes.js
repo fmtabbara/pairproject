@@ -3,16 +3,14 @@ const { Todo } = require('../utils')
 const { isValidTodo, validComplete } = require('../validation')
 
 const userRoutes = express.Router()
-const { db } = require('../server')
+const { db } = require('../db')
 
 // GET
 // Fetch all todos for a given user
 
 userRoutes.get('/:userid/todos', (req, res) => {
   const { userid } = req.params
-
-  req
-    .db('todos')
+  db('todos')
     .where({
       userid: +userid,
     })
@@ -31,9 +29,7 @@ userRoutes.get('/:userid/todos', (req, res) => {
 
 userRoutes.get('/:userid/todo/:todoid', (req, res) => {
   const { userid, todoid } = req.params
-
-  req
-    .db('todos')
+  db('todos')
     .where({
       userid: +userid,
       id: todoid,
@@ -57,8 +53,7 @@ userRoutes.post('/:userid/todo', (req, res) => {
   const isValid = isValidTodo(name)
   if (isValid) {
     const todo = new Todo({ userid, name })
-    req
-      .db('todos')
+    db('todos')
       .insert(todo)
       .then((results) => {
         if (results === 0) {
@@ -81,8 +76,7 @@ userRoutes.patch('/:userid/todo/:todoid', (req, res) => {
   const isValidName = isValidTodo(name)
 
   if (isValidName) {
-    req
-      .db('todos')
+    db('todos')
       .update({ name })
       .where({
         userid: +userid,
@@ -110,8 +104,7 @@ userRoutes.patch('/:userid/todo/:todoid/complete', (req, res) => {
   const isValid = validComplete(complete)
 
   if (isValid) {
-    req
-      .db('todos')
+    db('todos')
       .update({ complete })
       .where({
         userid: +userid,
@@ -136,8 +129,7 @@ userRoutes.patch('/:userid/todo/:todoid/complete', (req, res) => {
 userRoutes.delete('/:userid/todo/:todoid', (req, res) => {
   const { userid, todoid } = req.params
 
-  req
-    .db('todos')
+  db('todos')
     .del()
     .where({
       userid: +userid,
