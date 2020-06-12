@@ -1,9 +1,9 @@
 const express = require('express')
 const { Todo } = require('../utils')
 const { isValidTodo, validComplete } = require('../validation')
+const { db } = require('../db')
 
 const userRoutes = express.Router()
-const { db } = require('../db')
 
 // GET
 // Fetch all todos for a given user
