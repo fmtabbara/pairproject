@@ -1,3 +1,5 @@
+const jwt = require('jsonwebtoken')
+
 const isValidTodo = (todo) => {
   if (
     typeof todo !== 'string' ||
@@ -43,8 +45,33 @@ const isValidCredentials = ({ username, password }) => {
   return response
 }
 
+const validToken = (req) => {
+  const res = {
+    success: false,
+    message: 'Not authorized',
+  }
+
+  const header = req.headers['authorization']
+  if (typeof header !== 'undefined') {
+    const bearer = header.split(' ')
+    const token = bearer[1]
+    if (token) {
+      jwt.verify(token, 'privatekey', (err, data) => {
+        if (!err) {
+          res.success = true
+          res.message = 'Successful access to protected route'
+        } else {
+          console.log(err)
+        }
+      })
+    }
+  }
+  return res
+}
+
 module.exports = {
   isValidTodo,
   validComplete,
   isValidCredentials,
+  validToken,
 }

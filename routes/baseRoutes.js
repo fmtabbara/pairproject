@@ -1,7 +1,8 @@
 const express = require('express')
 const bcrypt = require('bcrypt')
+const jwt = require('jsonwebtoken')
 const { db } = require('../db')
-const { isValidCredentials } = require('../validation')
+const { isValidCredentials, validToken } = require('../validation')
 
 const baseRoutes = express.Router()
 
@@ -12,12 +13,24 @@ baseRoutes.post('/register', (req, res) => {
   if (!response.isValid) {
     res.status(400).send(response.errors)
   } else {
-    bcrypt.hash(password, 10, (err, hash) => {
-      db('users')
-        .insert({ username, password: hash })
-        .then(() => res.send("You're access has been set up. Have fun!"))
-        .catch((err) => res.status(400).send(err))
-    })
+    db('users')
+      .first()
+      .where({ username })
+      .then((user) => {
+        if (user) {
+          console.log(user)
+          res.send('The username already exists 😢 Try a different one')
+        } else {
+          bcrypt.hash(password, 10, (err, hash) => {
+            db('users')
+              .insert({ username, password: hash })
+              .then(() =>
+                res.send("You're access has been set up 🚀 Have fun!")
+              )
+              .catch((err) => res.status(400).send(err))
+          })
+        }
+      })
   }
 })
 
@@ -29,9 +42,16 @@ baseRoutes.post('/login', (req, res) => {
     .where({ username })
     .then((user) => {
       if (user) {
-        bcrypt.compare(password, user.password).then((result) => {
-          if (result) {
-            res.send('login success')
+        bcrypt.compare(password, user.password).then((valid) => {
+          if (valid) {
+            jwt.sign(
+              { username },
+              'privatekey',
+              { expiresIn: '1h' },
+              (err, token) => {
+                res.send({ token })
+              }
+            )
           } else {
             res.send('login fail')
           }
@@ -45,6 +65,16 @@ baseRoutes.post('/login', (req, res) => {
 
 baseRoutes.get('/logout', (req, res) => {
   res.send('logout route')
+})
+
+baseRoutes.get('/protected', (req, res) => {
+  const response = validToken(req)
+
+  if (response.success) {
+    res.send(response)
+  } else {
+    res.status(403).send(response)
+  }
 })
 
 module.exports = { baseRoutes }
