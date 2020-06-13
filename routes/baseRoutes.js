@@ -7,8 +7,8 @@ const { isValidCredentials, validToken } = require('../validation')
 const baseRoutes = express.Router()
 
 baseRoutes.post('/register', (req, res) => {
-  const { username, password } = req.body
-  const response = isValidCredentials({ username, password })
+  const { name, username, password } = req.body
+  const response = isValidCredentials({ name, username, password })
 
   if (!response.isValid) {
     res.status(400).send(response.errors)
@@ -18,12 +18,11 @@ baseRoutes.post('/register', (req, res) => {
       .where({ username })
       .then((user) => {
         if (user) {
-          console.log(user)
           res.send('The username already exists 😢 Try a different one')
         } else {
           bcrypt.hash(password, 10, (err, hash) => {
             db('users')
-              .insert({ username, password: hash })
+              .insert({ name, username, password: hash })
               .then(() =>
                 res.send("You're access has been set up 🚀 Have fun!")
               )

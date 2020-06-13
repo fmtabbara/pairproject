@@ -13,7 +13,6 @@ app.use(bodyParser.json())
 // User Routes
 
 app.use('/users', userRoutes)
-
 app.use('/', baseRoutes)
 
 // Fallback route
