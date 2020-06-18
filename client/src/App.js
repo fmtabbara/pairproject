@@ -1,12 +1,10 @@
-import React, { useMemo, useState, createContext } from 'react'
+import React, { createContext } from 'react'
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { AuthProvider } from './global/auth/context'
 import { Register } from './routes/register'
 import { Login } from './routes/login'
 import { CssBaseline } from '@material-ui/core'
-
-export const GlobalContext = createContext({})
 
 const darkTheme = createMuiTheme({
   palette: {
@@ -17,35 +15,28 @@ const darkTheme = createMuiTheme({
   },
 })
 
-const lightTheme = createMuiTheme({
+const theme = createMuiTheme({
   palette: {
-    type: 'light',
-    background: {
-      paper: '#fff',
-    },
+    type: 'dark',
   },
 })
 
 const App = () => {
-  const [darkMode, setDarkMode] = useState(true)
-
   return (
-    <ThemeProvider theme={darkMode ? darkTheme : lightTheme}>
+    <ThemeProvider theme={theme}>
       <CssBaseline />
-      <GlobalContext.Provider value={{ darkMode, setDarkMode }}>
-        <AuthProvider>
-          <Router>
-            <Switch>
-              <Route path="/register">
-                <Register />
-              </Route>
-              <Route path="/login">
-                <Login />
-              </Route>
-            </Switch>
-          </Router>
-        </AuthProvider>
-      </GlobalContext.Provider>
+      <AuthProvider>
+        <Router>
+          <Switch>
+            <Route path="/register">
+              <Register />
+            </Route>
+            <Route path="/login">
+              <Login />
+            </Route>
+          </Switch>
+        </Router>
+      </AuthProvider>
     </ThemeProvider>
   )
 }
