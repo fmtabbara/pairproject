@@ -1,19 +1,10 @@
-import React, { createContext } from 'react'
+import React from 'react'
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
 import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import { AuthProvider } from './global/auth/context'
 import { Register } from './routes/register'
 import { Login } from './routes/login'
 import { CssBaseline } from '@material-ui/core'
-
-const darkTheme = createMuiTheme({
-  palette: {
-    type: 'dark',
-    background: {
-      paper: '#333',
-    },
-  },
-})
 
 const theme = createMuiTheme({
   palette: {

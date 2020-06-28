@@ -1,5 +1,5 @@
 import React from 'react'
-import { Container, makeStyles, Grid } from '@material-ui/core'
+import { Container, makeStyles } from '@material-ui/core'
 import { TopNav } from '../../global/Nav'
 
 const usePageStyles = makeStyles((theme) => ({

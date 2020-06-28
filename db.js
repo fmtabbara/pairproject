@@ -6,10 +6,10 @@ const connection = process.env.NODE_ENV
   : {
       database: 'pairproject',
       port: process.env.DB_DEV_PORT,
-      user: process.env.USER || 'postgres',
+      user: process.env.DB_USER || 'postgres',
       password: process.env.DB_DEV_PASSWORD,
     }
-
+console.log(connection)
 const db = knex({
   client: 'pg',
   connection,
