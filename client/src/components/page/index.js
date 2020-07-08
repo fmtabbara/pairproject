@@ -9,7 +9,10 @@ const usePageStyles = makeStyles((theme) => ({
     padding: 0,
   },
   content: {
+    height: '100%',
     padding: theme.spacing(3),
+    display: 'flex',
+    justifyContent: 'center',
   },
 }))
 
@@ -17,7 +20,6 @@ export const Page = ({ children }) => {
   const classes = usePageStyles()
   return (
     <Container fixed maxWidth="sm" classes={{ root: classes.root }}>
-      <TopNav />
       <Container className={classes.content}>{children}</Container>
     </Container>
   )
