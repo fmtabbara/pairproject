@@ -5,6 +5,7 @@ import { AuthProvider } from './global/auth/context'
 import { Register } from './routes/register'
 import { Login } from './routes/login'
 import { CssBaseline } from '@material-ui/core'
+import { useFetch } from './hooks/useFetch'
 
 const theme = createMuiTheme({
   palette: {

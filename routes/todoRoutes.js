@@ -3,16 +3,16 @@ const { Todo } = require('../utils')
 const { isValidTodo, validComplete } = require('../validation')
 const { db } = require('../db')
 
-const userRoutes = express.Router()
+const todoRoutes = express.Router()
 
 // GET
 // Fetch all todos for a given user
 
-userRoutes.get('/:userid/todos', (req, res) => {
-  const { userid } = req.params
+todoRoutes.get('/:user', (req, res) => {
+  const { user } = req.params
   db('todos')
     .where({
-      userid: +userid,
+      user,
     })
     .then((results) => {
       if (results.length > 0) {
@@ -27,11 +27,11 @@ userRoutes.get('/:userid/todos', (req, res) => {
 // GET
 // Fetch single todo for a given user
 
-userRoutes.get('/:userid/todo/:todoid', (req, res) => {
-  const { userid, todoid } = req.params
+todoRoutes.get('/:user/:todoid', (req, res) => {
+  const { user, todoid } = req.params
   db('todos')
     .where({
-      userid: +userid,
+      user,
       id: todoid,
     })
     .then((result) => {
@@ -47,19 +47,19 @@ userRoutes.get('/:userid/todo/:todoid', (req, res) => {
 // POST
 // Add a new todo for a given user
 
-userRoutes.post('/:userid/todo', (req, res) => {
-  const { userid } = req.params
+todoRoutes.post('/:user', (req, res) => {
+  const { user } = req.params
   const { name } = req.body
   const isValid = isValidTodo(name)
   if (isValid) {
-    const todo = new Todo({ userid, name })
+    const todo = new Todo({ user, name })
     db('todos')
       .insert(todo)
       .then((results) => {
         if (results === 0) {
           res.status(403).send('sorry todo not found')
         } else {
-          res.redirect(303, `/users/${userid}/todos`)
+          res.redirect(303, `/todos/${user}/`)
         }
       })
   } else {
@@ -70,8 +70,8 @@ userRoutes.post('/:userid/todo', (req, res) => {
 // PATCH
 // Update a todo name for a given user
 
-userRoutes.patch('/:userid/todo/:todoid', (req, res) => {
-  const { todoid, userid } = req.params
+todoRoutes.patch('/:user/:todoid', (req, res) => {
+  const { todoid, user } = req.params
   const { name } = req.body
   const isValidName = isValidTodo(name)
 
@@ -86,7 +86,7 @@ userRoutes.patch('/:userid/todo/:todoid', (req, res) => {
         if (results === 0) {
           res.status(403).send('Sorry todo not found')
         } else {
-          res.redirect(303, `/users/${userid}/todos`)
+          res.redirect(303, `/todos/${user}`)
         }
       })
       .catch((e) => res.status(400).send(e))
@@ -98,8 +98,8 @@ userRoutes.patch('/:userid/todo/:todoid', (req, res) => {
 // PATCH
 // Update a todo with status for a given user
 
-userRoutes.patch('/:userid/todo/:todoid/complete', (req, res) => {
-  const { todoid, userid } = req.params
+todoRoutes.patch('/:user/:todoid/complete', (req, res) => {
+  const { todoid, user } = req.params
   const { complete } = req.body
   const isValid = validComplete(complete)
 
@@ -114,7 +114,7 @@ userRoutes.patch('/:userid/todo/:todoid/complete', (req, res) => {
         if (results === 0) {
           res.status(403).send('Sorry todo not found')
         } else {
-          res.redirect(303, `/users/${userid}/todos`)
+          res.redirect(303, `/todos/${user}`)
         }
       })
       .catch((e) => res.status(400).send(e))
@@ -126,13 +126,13 @@ userRoutes.patch('/:userid/todo/:todoid/complete', (req, res) => {
 // DELETE
 // Delete a todo for a given user
 
-userRoutes.delete('/:userid/todo/:todoid', (req, res) => {
-  const { userid, todoid } = req.params
+todoRoutes.delete('/:user/:todoid', (req, res) => {
+  const { user, todoid } = req.params
 
   db('todos')
     .del()
     .where({
-      userid: +userid,
+      user,
       id: todoid,
     })
     .then((result) => {
@@ -140,10 +140,10 @@ userRoutes.delete('/:userid/todo/:todoid', (req, res) => {
         console.log(result)
         return res.send('unable to delete todo')
       } else {
-        res.redirect(303, `/users/${userid}/todos`)
+        res.redirect(303, `/todos/${user}`)
       }
     })
     .catch((e) => res.send(e))
 })
 
-module.exports = { userRoutes }
+module.exports = { todoRoutes }
