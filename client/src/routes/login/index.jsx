@@ -10,30 +10,44 @@ import {
   useTheme,
 } from '@material-ui/core'
 import { Link } from 'react-router-dom'
+import { useState } from 'react'
 
 export const Login = () => {
   const theme = useTheme()
+
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+
+  const handleSubmit = () => {
+    console.log({ username, password })
+    setUsername('')
+    setPassword('')
+  }
+
   return (
     <Page>
       <Grid
         container
         direction="column"
         spacing={5}
-        sm={8}
         alignItems="center"
-        style={{ marginTop: theme.spacing(15) }}
+        style={{
+          maxWidth: 375,
+          margin: theme.spacing(15, 1, 1, 1),
+        }}
       >
         <Grid item>
-          <Typography variant="h5">Login</Typography>
+          <Typography variant="h4">Login</Typography>
         </Grid>
         <FormControl fullWidth>
-          <Grid container direction="column" spacing={1}>
+          <Grid container direction="column" spacing={2}>
             <Grid item>
               <TextField
                 label="username"
                 fullWidth
                 variant="outlined"
-                size="small"
+                onChange={(e) => setUsername(e.target.value)}
+                value={username}
               />
             </Grid>
             <Grid item>
@@ -41,12 +55,13 @@ export const Login = () => {
                 label="password"
                 type="password"
                 variant="outlined"
-                size="small"
                 fullWidth
+                onChange={(e) => setPassword(e.target.value)}
+                value={password}
               />
             </Grid>
             <Grid item align="end">
-              <Button variant="contained" size="small">
+              <Button variant="contained" size="small" onClick={handleSubmit}>
                 Go
               </Button>
             </Grid>
