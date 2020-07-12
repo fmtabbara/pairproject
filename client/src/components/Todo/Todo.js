@@ -14,10 +14,8 @@ const useStyles = makeStyles((theme) => ({
   root: {
     display: 'flex',
     alignItems: 'center',
-    background: 'transparent',
     margin: theme.spacing(0.5),
     color: 'white',
-    border: 'none',
   },
   content: {
     display: 'flex',
@@ -25,9 +23,7 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'flex-start',
   },
   checkbox: {
-    '&:hover': {
-      backgroundColor: 'transparent',
-    },
+    '&:hover': {},
   },
   icon: {
     borderRadius: 30,

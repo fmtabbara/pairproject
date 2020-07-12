@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import './App.css'
+import Todo from './components/Todo/Todo'
 
 function App() {
   const initialState = [
@@ -24,19 +25,20 @@ function App() {
   const [newTodo, setNewTodo] = useState('')
 
   const addNewTodo = () => {
-    const newArray = [...todos, { name: newTodo }]
+    const newArray = [...todos, { description: newTodo }]
     setTodos(newArray)
     setNewTodo('')
   }
 
   return (
     <div className="App">
-      {todos.map((todo) => (
-        <div key={todos.id}>
-          {todos.name}
-          {todos.description}
-          {todos.complete}
-        </div>
+      {todos.map((todo, index) => (
+        <Todo
+          key={index}
+          name={todo.name}
+          description={todo.description}
+          complete={false}
+        />
       ))}
       <input value={newTodo} onChange={(e) => setNewTodo(e.target.value)} />
       <button onClick={addNewTodo}>Add new todo</button>
