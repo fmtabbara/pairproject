@@ -1,7 +1,7 @@
 require('dotenv').config()
 const express = require('express')
 const bodyParser = require('body-parser')
-const { userRoutes } = require('./routes/userRoutes')
+const { todoRoutes } = require('./routes/todoRoutes')
 const { baseRoutes } = require('./routes/baseRoutes')
 
 const app = express()
@@ -12,7 +12,7 @@ app.use(bodyParser.json())
 
 // User Routes
 
-app.use('/users', userRoutes)
+app.use('/todos', todoRoutes)
 app.use('/', baseRoutes)
 
 // Fallback route

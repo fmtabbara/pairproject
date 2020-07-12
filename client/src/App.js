@@ -1,25 +1,35 @@
 import React from 'react'
-import logo from './logo.svg'
-import './App.css'
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { AuthProvider } from './global/auth/context'
+import { Register } from './routes/register'
+import { Login } from './routes/login'
+import { CssBaseline } from '@material-ui/core'
+import { useFetch } from './hooks/useFetch'
 
-function App() {
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+  },
+})
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AuthProvider>
+        <Router>
+          <Switch>
+            <Route path="/register">
+              <Register />
+            </Route>
+            <Route path="/login">
+              <Login />
+            </Route>
+          </Switch>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
 
