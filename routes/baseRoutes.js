@@ -35,6 +35,7 @@ baseRoutes.post('/register', (req, res) => {
 
 baseRoutes.post('/login', (req, res) => {
   const { username, password } = req.body
+  console.log({ username, password })
 
   db('users')
     .first()
@@ -52,11 +53,11 @@ baseRoutes.post('/login', (req, res) => {
               }
             )
           } else {
-            res.send('login fail')
+            res.status(401).json('login fail')
           }
         })
       } else {
-        res.send('user not found')
+        res.status(404).json('user not found')
       }
     })
     .catch((e) => res.status(400).send(e))

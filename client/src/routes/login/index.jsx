@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Page } from '../../components/page'
 import {
   Typography,
@@ -11,6 +11,9 @@ import {
 } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { useState } from 'react'
+import { useFetch } from '../../hooks/useFetch'
+import { useEffect } from 'react'
+import { AuthContext } from '../../global/auth/context'
 
 export const Login = () => {
   const theme = useTheme()
@@ -18,8 +21,10 @@ export const Login = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
 
+  const { handleLogin } = useContext(AuthContext)
+
   const handleSubmit = () => {
-    console.log({ username, password })
+    handleLogin({username, password})
     setUsername('')
     setPassword('')
   }

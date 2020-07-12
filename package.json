@@ -22,5 +22,6 @@
     "nodemon": "^2.0.4",
     "pg": "^8.2.1",
     "uuid": "^8.1.0"
-  }
+  },
+  "proxy": "http://localhost:3001"
 }

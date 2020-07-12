@@ -51,6 +51,7 @@ todoRoutes.post('/:user', (req, res) => {
   const { user } = req.params
   const { name } = req.body
   const isValid = isValidTodo(name)
+
   if (isValid) {
     const todo = new Todo({ user, name })
     db('todos')
