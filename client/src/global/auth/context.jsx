@@ -17,10 +17,10 @@ export const AuthProvider = ({ children }) => {
     })
   }
 
-  useEffect(() => console.log(results, error), [error])
+  useEffect(() => setToken(results?.token), [results])
 
   return (
-    <AuthContext.Provider value={{ token, handleLogin }}>
+    <AuthContext.Provider value={{ token, handleLogin, error, loading }}>
       {children}
     </AuthContext.Provider>
   )

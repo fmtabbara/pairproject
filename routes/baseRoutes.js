@@ -35,7 +35,6 @@ baseRoutes.post('/register', (req, res) => {
 
 baseRoutes.post('/login', (req, res) => {
   const { username, password } = req.body
-  console.log({ username, password })
 
   db('users')
     .first()
