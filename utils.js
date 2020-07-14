@@ -1,10 +1,10 @@
 const { v4: uuid } = require('uuid')
 
-function Todo({ userid, name }) {
+function Todo({ user, name }) {
   this.id = uuid()
   this.name = name
   this.complete = false
-  this.userid = +userid
+  this.user = user
 }
 
 module.exports = { Todo }

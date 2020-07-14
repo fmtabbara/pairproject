@@ -1,48 +1,39 @@
-import React, { useState } from 'react'
+import React from 'react'
 import './App.css'
-import Todo from './components/Todo/Todo'
+import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
+import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { AuthProvider } from './global/auth/context'
+import { Register } from './routes/register'
+import { Login } from './routes/login'
+import { CssBaseline } from '@material-ui/core'
+import { Todos } from './routes/todos/index'
 
-function App() {
-  const initialState = [
-    {
-      name: 'todo1',
-      description: 'coding',
-      complete: false,
-    },
-    {
-      name: 'todo2',
-      description: 'reading',
-      complete: false,
-    },
-    {
-      name: 'todo3',
-      description: 'jogging',
-      complete: false,
-    },
-  ]
+const theme = createMuiTheme({
+  palette: {
+    type: 'dark',
+  },
+})
 
-  const [todos, setTodos] = useState(initialState)
-  const [newTodo, setNewTodo] = useState('')
-
-  const addNewTodo = () => {
-    const newArray = [...todos, { description: newTodo }]
-    setTodos(newArray)
-    setNewTodo('')
-  }
-
+const App = () => {
   return (
-    <div className="App">
-      {todos.map((todo, index) => (
-        <Todo
-          key={index}
-          name={todo.name}
-          description={todo.description}
-          complete={false}
-        />
-      ))}
-      <input value={newTodo} onChange={(e) => setNewTodo(e.target.value)} />
-      <button onClick={addNewTodo}>Add new todo</button>
-    </div>
+    <ThemeProvider theme={theme}>
+      <CssBaseline />
+      <AuthProvider>
+        <Router>
+          <Switch>
+            <Route path="/register">
+              <Register />
+            </Route>
+            <Route path="/login">
+              <Login />
+            </Route>
+            <Route path="/todos">
+              <Todos />
+            </Route>
+          </Switch>
+        </Router>
+      </AuthProvider>
+    </ThemeProvider>
   )
 }
 
