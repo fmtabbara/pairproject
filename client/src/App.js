@@ -5,6 +5,7 @@ import { AuthProvider } from './global/auth/context'
 import { Register } from './routes/register'
 import { Login } from './routes/login'
 import { CssBaseline } from '@material-ui/core'
+import { Todos } from './routes/todos'
 
 const theme = createMuiTheme({
   palette: {
@@ -24,6 +25,9 @@ const App = () => {
             </Route>
             <Route path="/login">
               <Login />
+            </Route>
+            <Route path="/todos">
+              <Todos />
             </Route>
           </Switch>
         </Router>

@@ -1,5 +1,5 @@
 import React, { useEffect, useContext, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import {
   Typography,
   FormControl,
@@ -18,17 +18,33 @@ export const Login = () => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [usernameError, setUsernameError] = useState()
+  const [passwordError, setPasswordError] = useState()
+
+  const history = useHistory()
 
   const { handleLogin, loading, error, token } = useContext(AuthContext)
 
   const handleSubmit = (e) => {
     e.preventDefault()
     handleLogin({ username, password })
-    setUsername('')
-    setPassword('')
   }
 
-  useEffect(() => (token ? console.log("YOU'RE IN!") : undefined), [token])
+  useEffect(() => (token ? history.push('/todos') : undefined), [token])
+
+  useEffect(() => {
+    if (error === 'Not Found') {
+      setUsernameError(true)
+    } else {
+      setUsernameError(false)
+    }
+
+    if (error === 'Unauthorized') {
+      setPasswordError(true)
+    } else {
+      setPasswordError(false)
+    }
+  }, [error])
 
   return (
     <Page>
@@ -52,11 +68,14 @@ export const Login = () => {
               <Grid container direction="column" spacing={2}>
                 <Grid item>
                   <TextField
+                    autoFocus
                     label="username"
                     fullWidth
                     variant="outlined"
                     onChange={(e) => setUsername(e.target.value)}
                     value={username}
+                    helperText={usernameError && 'username not found'}
+                    error={usernameError}
                   />
                 </Grid>
                 <Grid item>
@@ -67,6 +86,8 @@ export const Login = () => {
                     fullWidth
                     onChange={(e) => setPassword(e.target.value)}
                     value={password}
+                    helperText={passwordError && 'incorrect password'}
+                    error={passwordError}
                   />
                 </Grid>
                 <Grid item align="end">
