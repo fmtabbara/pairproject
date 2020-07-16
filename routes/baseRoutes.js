@@ -7,8 +7,8 @@ const { isValidCredentials, validToken } = require('../validation')
 const baseRoutes = express.Router()
 
 baseRoutes.post('/register', (req, res) => {
-  const { name, username, password } = req.body
-  const response = isValidCredentials({ name, username, password })
+  const { username, password } = req.body
+  const response = isValidCredentials({ username, password })
 
   if (!response.isValid) {
     res.status(400).send(response.errors)
@@ -22,7 +22,7 @@ baseRoutes.post('/register', (req, res) => {
         } else {
           bcrypt.hash(password, 10, (err, hash) => {
             db('users')
-              .insert({ name, username, password: hash })
+              .insert({ username, password: hash })
               .then(() =>
                 res.send("You're access has been set up 🚀 Have fun!")
               )

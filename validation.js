@@ -17,7 +17,7 @@ const isValidTodo = (todo) => {
 const validComplete = (complete) =>
   typeof complete === 'boolean' ? true : false
 
-const isValidCredentials = ({ name, username, password }) => {
+const isValidCredentials = ({ username, password }) => {
   const response = { isValid: true, errors: [] }
   if (
     username === undefined ||
@@ -41,16 +41,6 @@ const isValidCredentials = ({ name, username, password }) => {
     response.errors.push(
       'Please enter a password between 8 and 20 characters long'
     )
-  }
-
-  if (
-    name === undefined ||
-    name === null ||
-    name.length < 3 ||
-    name.length > 20
-  ) {
-    response.isValid = false
-    response.errors.push('Please enter a name between 3 and 20 characters long')
   }
 
   return response
