@@ -16,7 +16,7 @@ todoRoutes.get('/:user', (req, res) => {
     })
     .then((results) => {
       if (results.length > 0) {
-        return res.send(results)
+        return res.send(results.reverse())
       } else {
         return res.send('No todos')
       }
@@ -51,6 +51,7 @@ todoRoutes.post('/:user', (req, res) => {
   const { user } = req.params
   const { name } = req.body
   const isValid = isValidTodo(name)
+
   if (isValid) {
     const todo = new Todo({ user, name })
     db('todos')
@@ -79,7 +80,7 @@ todoRoutes.patch('/:user/:todoid', (req, res) => {
     db('todos')
       .update({ name })
       .where({
-        userid: +userid,
+        user,
         id: todoid,
       })
       .then((results) => {
@@ -107,7 +108,7 @@ todoRoutes.patch('/:user/:todoid/complete', (req, res) => {
     db('todos')
       .update({ complete })
       .where({
-        userid: +userid,
+        user,
         id: todoid,
       })
       .then((results) => {
@@ -137,8 +138,7 @@ todoRoutes.delete('/:user/:todoid', (req, res) => {
     })
     .then((result) => {
       if (result === 0) {
-        console.log(result)
-        return res.send('unable to delete todo')
+        return res.status(404).send('unable to delete todo')
       } else {
         res.redirect(303, `/todos/${user}`)
       }
