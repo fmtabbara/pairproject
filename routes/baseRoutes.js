@@ -18,7 +18,9 @@ baseRoutes.post('/register', (req, res) => {
       .where({ username })
       .then((user) => {
         if (user) {
-          res.send('The username already exists 😢 Try a different one')
+          res.status(400).send({
+            userExists: true,
+          })
         } else {
           bcrypt.hash(password, 10, (err, hash) => {
             db('users')
