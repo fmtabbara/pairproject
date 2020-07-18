@@ -25,9 +25,7 @@ baseRoutes.post('/register', (req, res) => {
           bcrypt.hash(password, 10, (err, hash) => {
             db('users')
               .insert({ username, password: hash })
-              .then(() =>
-                res.send("You're access has been set up 🚀 Have fun!")
-              )
+              .then(() => res.send({ success: true }))
               .catch((err) => res.status(400).send(err))
           })
         }

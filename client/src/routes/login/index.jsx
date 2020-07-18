@@ -97,7 +97,7 @@ export const Login = () => {
                 </Grid>
               </Grid>
               <FormHelperText id="my-helper-text">
-                Register <Link to="/register">here</Link>.
+                Register <Link to="/register">here</Link>
               </FormHelperText>
             </FormControl>
           </form>

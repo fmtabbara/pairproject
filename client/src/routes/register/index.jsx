@@ -13,12 +13,13 @@ import { Page } from '../../components/page'
 import { Loading } from '../../components/loading/loading'
 
 import { useFetch } from '../../hooks/useFetch'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { useEffect } from 'react'
 
 export const Register = ({ withConfirmPassword }) => {
-  const { fetch, loading, error: fetchError } = useFetch()
+  const { fetch, loading, error: fetchError, results } = useFetch()
   const theme = useTheme()
+  const history = useHistory()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
@@ -28,6 +29,12 @@ export const Register = ({ withConfirmPassword }) => {
   useEffect(() => {
     setError(fetchError)
   }, [fetchError])
+
+  useEffect(() => {
+    if (results?.success) {
+      history.push('/register-success')
+    }
+  }, [results])
 
   const onRegister = ({ username, password }) => {
     fetch('/register', {
@@ -120,7 +127,7 @@ export const Register = ({ withConfirmPassword }) => {
                 </Grid>
               </Grid>
               <FormHelperText id="my-helper-text">
-                Login <Link to="/login">here</Link>.
+                Login <Link to="/login">here</Link>
               </FormHelperText>
             </FormControl>
           </form>

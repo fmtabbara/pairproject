@@ -6,6 +6,7 @@ import { Register } from './routes/register'
 import { Login } from './routes/login'
 import { CssBaseline } from '@material-ui/core'
 import { Todos } from './routes/todos'
+import { RegisterSuccess } from './routes/register-success'
 
 const theme = createMuiTheme({
   palette: {
@@ -23,11 +24,14 @@ const App = () => {
             <Route path="/register">
               <Register />
             </Route>
-            <Route path="/login">
-              <Login />
+            <Route path="/register-success">
+              <RegisterSuccess />
             </Route>
             <Route path="/todos">
               <Todos />
+            </Route>
+            <Route path="/">
+              <Login />
             </Route>
           </Switch>
         </Router>
