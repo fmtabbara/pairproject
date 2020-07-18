@@ -16,12 +16,13 @@ import { useFetch } from '../../hooks/useFetch'
 import { Link } from 'react-router-dom'
 import { useEffect } from 'react'
 
-export const Register = () => {
+export const Register = ({ withConfirmPassword }) => {
   const { fetch, loading, error: fetchError } = useFetch()
   const theme = useTheme()
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
   const [error, setError] = useState()
 
   useEffect(() => {
@@ -91,6 +92,27 @@ export const Register = () => {
                     error={error?.password}
                   />
                 </Grid>
+                {withConfirmPassword && (
+                  <Grid item>
+                    <TextField
+                      label="confirm password"
+                      type="password"
+                      variant="outlined"
+                      fullWidth
+                      onChange={(e) => setConfirmPassword(e.target.value)}
+                      value={confirmPassword}
+                      helperText={
+                        confirmPassword.length > 0 &&
+                        password !== confirmPassword &&
+                        'passwords do not match'
+                      }
+                      error={
+                        confirmPassword.length > 0 &&
+                        password !== confirmPassword
+                      }
+                    />
+                  </Grid>
+                )}
                 <Grid item align="end">
                   <Button type="submit" variant="contained" size="small">
                     Register
