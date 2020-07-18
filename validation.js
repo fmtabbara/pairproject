@@ -18,7 +18,10 @@ const validComplete = (complete) =>
   typeof complete === 'boolean' ? true : false
 
 const isValidCredentials = ({ username, password }) => {
-  const response = { isValid: true, errors: [] }
+  const response = {
+    isValid: true,
+    errors: { username: false, password: false },
+  }
   if (
     username === undefined ||
     username === null ||
@@ -26,9 +29,7 @@ const isValidCredentials = ({ username, password }) => {
     username.length > 20
   ) {
     response.isValid = false
-    response.errors.push(
-      'Please enter a username between 3 and 20 characters long'
-    )
+    response.errors.username = true
   }
 
   if (
@@ -38,9 +39,7 @@ const isValidCredentials = ({ username, password }) => {
     password.length > 20
   ) {
     response.isValid = false
-    response.errors.push(
-      'Please enter a password between 8 and 20 characters long'
-    )
+    response.errors.password = true
   }
 
   return response

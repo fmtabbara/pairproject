@@ -9,7 +9,7 @@ import {
   Button,
   useTheme,
 } from '@material-ui/core'
-import { Loader } from '../../components/loader/loader'
+import { Loading } from '../../components/loading/loading'
 import { AuthContext } from '../../global/auth/context'
 import { Page } from '../../components/page'
 
@@ -61,7 +61,7 @@ export const Login = () => {
         <Grid item>
           <Typography variant="h4">Login</Typography>
         </Grid>
-        {loading && <Loader />}
+        {loading && <Loading />}
         {!loading && (
           <form onSubmit={handleSubmit} style={{ width: '100%' }}>
             <FormControl fullWidth onSubmit={handleSubmit}>
@@ -97,7 +97,7 @@ export const Login = () => {
                 </Grid>
               </Grid>
               <FormHelperText id="my-helper-text">
-                Login or register <Link to="/register">here</Link>.
+                Register <Link to="/register">here</Link>
               </FormHelperText>
             </FormControl>
           </form>

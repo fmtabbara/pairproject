@@ -24,11 +24,12 @@ export const useFetch = () => {
         setError(false)
         setLoading(false)
       } else {
-        setError(response?.statusText)
+        const json = await response.json()
+        setError(json)
         setLoading(false)
       }
     } catch (e) {
-      setError(e)
+      setError(true)
       setLoading(false)
     }
   }
