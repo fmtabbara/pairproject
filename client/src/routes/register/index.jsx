@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useContext } from 'react'
 import { useTheme } from '@material-ui/styles'
 import {
   Grid,
@@ -15,9 +15,11 @@ import { Loading } from '../../components/loading/loading'
 import { useFetch } from '../../hooks/useFetch'
 import { Link, useHistory } from 'react-router-dom'
 import { useEffect } from 'react'
+import { AuthContext } from '../../global/auth/context'
 
 export const Register = ({ withConfirmPassword }) => {
   const { fetch, loading, error: fetchError, results } = useFetch()
+  const { setHasRegistered } = useContext(AuthContext)
   const theme = useTheme()
   const history = useHistory()
 
@@ -32,6 +34,7 @@ export const Register = ({ withConfirmPassword }) => {
 
   useEffect(() => {
     if (results?.success) {
+      setHasRegistered(true)
       history.push('/register-success')
     }
   }, [results])

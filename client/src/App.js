@@ -1,6 +1,6 @@
 import React from 'react'
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
+import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
 import { AuthProvider } from './global/auth/context'
 import { Register } from './routes/register'
 import { Login } from './routes/login'
@@ -30,8 +30,13 @@ const App = () => {
             <Route path="/todos">
               <Todos />
             </Route>
-            <Route path="/">
+            <Route path="/login">
               <Login />
+            </Route>
+            <Route>
+              <div>
+                404 - Login <Link to="/login">here</Link>
+              </div>
             </Route>
           </Switch>
         </Router>

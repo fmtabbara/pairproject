@@ -7,6 +7,7 @@ export const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState()
+  const [hasRegistered, setHasRegistered] = useState(false)
 
   const { results, fetch, error, loading } = useFetch()
 
@@ -20,7 +21,16 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => setToken(results?.token), [results])
 
   return (
-    <AuthContext.Provider value={{ token, handleLogin, error, loading }}>
+    <AuthContext.Provider
+      value={{
+        token,
+        handleLogin,
+        error,
+        loading,
+        setHasRegistered,
+        hasRegistered,
+      }}
+    >
       {children}
     </AuthContext.Provider>
   )
