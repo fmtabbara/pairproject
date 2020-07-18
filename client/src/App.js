@@ -1,6 +1,12 @@
 import React from 'react'
 import { ThemeProvider, createMuiTheme } from '@material-ui/core/styles'
-import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom'
+import {
+  BrowserRouter as Router,
+  Switch,
+  Route,
+  Link,
+  Redirect,
+} from 'react-router-dom'
 import { AuthProvider } from './global/auth/context'
 import { Register } from './routes/register'
 import { Login } from './routes/login'
@@ -32,6 +38,9 @@ const App = () => {
             </Route>
             <Route path="/login">
               <Login />
+            </Route>
+            <Route exact path="/">
+              <Redirect to="/login" />
             </Route>
             <Route>
               <div>
