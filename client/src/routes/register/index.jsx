@@ -37,7 +37,7 @@ export const Register = ({ withConfirmPassword }) => {
       setHasRegistered(true)
       history.push('/register-success')
     }
-  }, [results])
+  }, [results, history, setHasRegistered])
 
   const onRegister = ({ username, password }) => {
     fetch('/register', {

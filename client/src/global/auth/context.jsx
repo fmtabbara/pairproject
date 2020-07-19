@@ -8,6 +8,7 @@ export const AuthContext = createContext()
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState()
   const [hasRegistered, setHasRegistered] = useState(false)
+  const [currentUser, setCurrentUser] = useState()
 
   const { results, fetch, error, loading } = useFetch()
 
@@ -18,7 +19,10 @@ export const AuthProvider = ({ children }) => {
     })
   }
 
-  useEffect(() => setToken(results?.token), [results])
+  useEffect(() => {
+    setCurrentUser(results?.username)
+    setToken(results?.token)
+  }, [results])
 
   return (
     <AuthContext.Provider

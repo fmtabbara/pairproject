@@ -27,7 +27,15 @@ export const RegisterSuccess = () => {
           spacing={2}
         >
           <Grid item>
-            <Typography variant="h3">🎉Welcome!🎉</Typography>
+            <Typography variant="h3">
+              <span role="img" aria-label="tada-emoji">
+                🎉
+              </span>
+              Welcome!
+              <span role="img" aria-label="tada-emoji">
+                🎉
+              </span>
+            </Typography>
           </Grid>
           <Grid>
             <Typography variant="h6">

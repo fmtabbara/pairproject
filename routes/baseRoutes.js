@@ -48,7 +48,7 @@ baseRoutes.post('/login', (req, res) => {
               'privatekey',
               { expiresIn: '1h' },
               (err, token) => {
-                res.send({ token })
+                res.send({ token, username })
               }
             )
           } else {

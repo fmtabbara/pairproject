@@ -18,7 +18,6 @@ export const Login = () => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [usernameError, setUsernameError] = useState()
   const [passwordError, setPasswordError] = useState()
 
   const history = useHistory()
@@ -30,16 +29,13 @@ export const Login = () => {
     handleLogin({ username, password })
   }
 
-  useEffect(() => (token ? history.push('/todos') : undefined), [token])
+  useEffect(() => (token ? history.push('/todos') : undefined), [
+    token,
+    history,
+  ])
 
   useEffect(() => {
-    if (error === 'Not Found') {
-      setUsernameError(true)
-    } else {
-      setUsernameError(false)
-    }
-
-    if (error === 'Unauthorized') {
+    if (error === 'login fail') {
       setPasswordError(true)
     } else {
       setPasswordError(false)
@@ -74,8 +70,6 @@ export const Login = () => {
                     variant="outlined"
                     onChange={(e) => setUsername(e.target.value)}
                     value={username}
-                    helperText={usernameError && 'username not found'}
-                    error={usernameError}
                   />
                 </Grid>
                 <Grid item>
