@@ -18,7 +18,8 @@ export const Login = () => {
 
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
-  const [passwordError, setPasswordError] = useState()
+  const [usernameError, setUsernameError] = useState(false)
+  const [passwordError, setPasswordError] = useState(false)
 
   const history = useHistory()
 
@@ -39,6 +40,12 @@ export const Login = () => {
       setPasswordError(true)
     } else {
       setPasswordError(false)
+    }
+
+    if (error === 'user not found') {
+      setUsernameError(true)
+    } else {
+      setUsernameError(false)
     }
   }, [error])
 
@@ -70,6 +77,8 @@ export const Login = () => {
                     variant="outlined"
                     onChange={(e) => setUsername(e.target.value)}
                     value={username}
+                    helperText={usernameError && 'user not found'}
+                    error={usernameError}
                   />
                 </Grid>
                 <Grid item>
