@@ -6,8 +6,17 @@ import { Link } from 'react-router-dom'
 import { Loading } from '../../components/loading/loading'
 import { Page } from '../../components/page'
 import { useFetch } from '../../hooks/useFetch'
+import {
+  TextField,
+  Button,
+  FormControl,
+  ThemeProvider,
+} from '@material-ui/core'
+import { useTheme } from '@material-ui/styles'
 
 export const Todos = () => {
+  const theme = useTheme()
+
   const { token, currentUser } = useContext(AuthContext)
   const [todos, setTodos] = useState([])
   const [newTodo, setNewTodo] = useState('')
@@ -49,8 +58,22 @@ export const Todos = () => {
               complete={false}
             />
           ))}
-          <input value={newTodo} onChange={(e) => setNewTodo(e.target.value)} />
-          <button onClick={addNewTodo}>Add new todo</button>
+          <FormControl
+            style={{
+              margin: theme.spacing(0.5),
+            }}
+          >
+            <TextField
+              style={{
+                marginBottom: theme.spacing(1),
+              }}
+              value={newTodo}
+              onChange={(e) => setNewTodo(e.target.value)}
+              variant="outlined"
+              size="small"
+            />
+            <Button onClick={addNewTodo}>Add</Button>
+          </FormControl>
         </div>
       ) : (
         <div>
