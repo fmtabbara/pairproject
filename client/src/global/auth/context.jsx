@@ -20,8 +20,10 @@ export const AuthProvider = ({ children }) => {
   }
 
   useEffect(() => {
-    setCurrentUser(results?.username)
-    setToken(results?.token)
+    if (results?.username && results?.token) {
+      setCurrentUser(results.username)
+      setToken(results.token)
+    }
   }, [results])
 
   return (
@@ -33,6 +35,7 @@ export const AuthProvider = ({ children }) => {
         loading,
         setHasRegistered,
         hasRegistered,
+        currentUser,
       }}
     >
       {children}
