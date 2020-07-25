@@ -8,25 +8,31 @@ import { Page } from '../../components/page'
 import { useFetch } from '../../hooks/useFetch'
 
 export const Todos = () => {
-  const { token } = useContext(AuthContext)
+  const { token, currentUser } = useContext(AuthContext)
   const [todos, setTodos] = useState([])
   const [newTodo, setNewTodo] = useState('')
 
   const addNewTodo = () => {
-    fetch('/todos/ali@gmail.com', {
+    fetch(`/todos/${currentUser}`, {
       method: 'POST',
       body: JSON.stringify({ name: newTodo }),
     })
     setNewTodo('')
   }
 
-  const { results = [], error, loading, fetch } = useFetch()
-  useEffect(() => {
-    setTodos([...results])
-  }, [results])
+  const { results, error, loading, fetch } = useFetch()
 
   useEffect(() => {
-    fetch('/todos/ali@gmail.com')
+    if (results) {
+      setTodos([...results])
+    }
+  }, [results])
+  console.log(results)
+
+  useEffect(() => {
+    if (currentUser) {
+      fetch(`/todos/${currentUser}`)
+    }
   }, [])
 
   return (
