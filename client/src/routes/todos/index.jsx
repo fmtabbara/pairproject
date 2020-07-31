@@ -11,6 +11,7 @@ import {
   Button,
   FormControl,
   ThemeProvider,
+  Checkbox,
 } from '@material-ui/core'
 import { useTheme } from '@material-ui/styles'
 
@@ -20,6 +21,7 @@ export const Todos = () => {
   const { token, currentUser } = useContext(AuthContext)
   const [todos, setTodos] = useState([])
   const [newTodo, setNewTodo] = useState('')
+  const [todos, isComplete] = useState([])
 
   const addNewTodo = () => {
     fetch(`/todos/${currentUser}`, {
@@ -40,46 +42,73 @@ export const Todos = () => {
 
   useEffect(() => {
     if (currentUser) {
-      fetch(`/todos/${currentUser}`)
+      fetch(`/todos/${currentUser}/complete`)
     }
   }, [])
 
-  return (
-    <Page>
-      {loading ? (
-        <Loading />
-      ) : token ? (
-        <div className="App">
-          {todos.map((todo, index) => (
-            <Todo
-              key={index}
-              name={todo.name}
-              description={todo.name}
-              complete={false}
-            />
-          ))}
-          <FormControl
-            style={{
-              margin: theme.spacing(0.5),
-            }}
-          >
-            <TextField
+  // this is added:
+
+  const handleOnChange = (e) => {
+    const isComplete = () =>
+      fetch('todos/${currentUser}', {
+        method: 'PATCH',
+        body: JSON.stringify({ complete: true }),
+      })
+
+    const { results, onChange, loading, fetch } = useFetch()
+
+    useEffect(() => {
+      if (isComplete) {
+        setTodos([...results])  , //need to change this to get an array back without completed todos. (remove the completed todo from the list)
+      }
+    }, [results])
+    console.log(results)
+
+    useEffect(() => {
+      if (currentUser) {
+        fetch(`/todos/${currentUser}/complete`)
+      }
+    }, [])
+
+    // above added
+
+    return (
+      <Page>
+        {loading ? (
+          <Loading />
+        ) : token ? (
+          <div className="App">
+            {todos.map((todo, index) => (
+              <Todo
+                key={index}
+                name={todo.name}
+                description={todo.name}
+                complete={false}
+              />
+            ))}
+            <FormControl
               style={{
-                marginBottom: theme.spacing(1),
+                margin: theme.spacing(0.5),
               }}
-              value={newTodo}
-              onChange={(e) => setNewTodo(e.target.value)}
-              variant="outlined"
-              size="small"
-            />
-            <Button onClick={addNewTodo}>Add</Button>
-          </FormControl>
-        </div>
-      ) : (
-        <div>
-          You need to <Link to="/login">login</Link> to see your todos
-        </div>
-      )}
-    </Page>
-  )
+            >
+              <TextField
+                style={{
+                  marginBottom: theme.spacing(1),
+                }}
+                value={newTodo}
+                onChange={(e) => setNewTodo(e.target.value)}
+                variant="outlined"
+                size="small"
+              />
+              <Button onClick={addNewTodo}>Add</Button>
+            </FormControl>
+          </div>
+        ) : (
+          <div>
+            You need to <Link to="/login">login</Link> to see your todos
+          </div>
+        )}
+      </Page>
+    )
+  }
 }

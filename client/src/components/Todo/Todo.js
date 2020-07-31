@@ -66,6 +66,7 @@ export const Todo = ({ name, description, complete }) => {
     <Card classes={{ root: classes.root }} variant="outlined">
       <CardActions>
         <Checkbox
+          handleOnChange={handleOnChange}
           className={classes.checkbox}
           icon={<span className={classes.icon} />}
           checkedIcon={
