@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext, useEffect } from 'react'
 
 import clsx from 'clsx'
 import {
@@ -9,6 +9,9 @@ import {
   makeStyles,
   CardActions,
 } from '@material-ui/core'
+
+import {useFetch} from '../../hooks/useFetch'
+import { AuthContext } from '../../global/auth/context'
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -60,12 +63,18 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export const Todo = ({ name, description, complete }) => {
+
+
+
+export const Todo = ({ id, name, description, complete, onComplete }) => {
   const classes = useStyles()
+
   return (
     <Card classes={{ root: classes.root }} variant="outlined">
       <CardActions>
         <Checkbox
+          onChange={(e) => onComplete(id, e.target.checked)}
+          checked={complete}
           className={classes.checkbox}
           icon={<span className={classes.icon} />}
           checkedIcon={
@@ -74,7 +83,7 @@ export const Todo = ({ name, description, complete }) => {
         />
       </CardActions>
       <CardContent className={classes.content}>
-        <Typography variant="h6">{name}</Typography>
+        <Typography style={complete ? {textDecoration: "line-through", opacity: 0.3 } : {}} variant="h6">{name}</Typography>
         <Typography variant="caption" style={{ color: '#888' }}>
           {description}
         </Typography>
