@@ -6,9 +6,9 @@ import { useEffect } from 'react'
 export const AuthContext = createContext()
 
 export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState("token")
+  const [token, setToken] = useState()
   const [hasRegistered, setHasRegistered] = useState(false)
-  const [currentUser, setCurrentUser] = useState("fmtabbara")
+  const [currentUser, setCurrentUser] = useState()
 
   const { results, fetch, error, loading } = useFetch()
 

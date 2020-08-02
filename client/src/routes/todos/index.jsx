@@ -22,10 +22,12 @@ export const Todos = () => {
   const [newTodo, setNewTodo] = useState('')
 
   const addNewTodo = () => {
-    fetch(`/todos/${currentUser}`, {
-      method: 'POST',
-      body: JSON.stringify({ name: newTodo }),
-    })
+    if (newTodo.length > 0) {
+      fetch(`/todos/${currentUser}`, {
+        method: 'POST',
+        body: JSON.stringify({ name: newTodo }),
+      })
+    }
     setNewTodo('')
   }
 
@@ -99,22 +101,27 @@ export const Todos = () => {
               complete={todo.complete}
             />
           ))}
-          <FormControl
-            style={{
-              margin: theme.spacing(0.5),
-            }}
-          >
-            <TextField
+          <form onSubmit={addNewTodo}>
+            <FormControl
               style={{
-                marginBottom: theme.spacing(1),
+                margin: theme.spacing(0.5),
               }}
-              value={newTodo}
-              onChange={(e) => setNewTodo(e.target.value)}
-              variant="outlined"
-              size="small"
-            />
-            <Button onClick={addNewTodo}>Add</Button>
-          </FormControl>
+            >
+              <TextField
+                style={{
+                  marginBottom: theme.spacing(1),
+                }}
+                value={newTodo}
+                onChange={(e) => setNewTodo(e.target.value)}
+                variant="outlined"
+                size="small"
+                autoFocus
+              />
+              <Button type="submit" onClick={addNewTodo}>
+                Add
+              </Button>
+            </FormControl>
+          </form>
         </div>
       ) : (
         <div>
