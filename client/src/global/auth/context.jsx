@@ -19,6 +19,11 @@ export const AuthProvider = ({ children }) => {
     })
   }
 
+  const onSignOut = () => {
+    setCurrentUser(undefined)
+    setToken(undefined)
+  }
+
   useEffect(() => {
     if (results?.username && results?.token) {
       setCurrentUser(results.username)
@@ -36,6 +41,7 @@ export const AuthProvider = ({ children }) => {
         setHasRegistered,
         hasRegistered,
         currentUser,
+        onSignOut,
       }}
     >
       {children}

@@ -17,7 +17,7 @@ import { useTheme } from '@material-ui/styles'
 export const Todos = () => {
   const theme = useTheme()
 
-  const { token, currentUser } = useContext(AuthContext)
+  const { token, currentUser, onSignOut } = useContext(AuthContext)
   const [todos, setTodos] = useState([])
   const [newTodo, setNewTodo] = useState('')
 
@@ -122,6 +122,7 @@ export const Todos = () => {
               </Button>
             </FormControl>
           </form>
+          <Button onClick={onSignOut}>Log out</Button>
         </div>
       ) : (
         <div>
