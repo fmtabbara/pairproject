@@ -106,11 +106,11 @@ todoRoutes.patch('/:user/:todoid/complete', (req, res) => {
 
   if (isValid) {
     db('todos')
-    .where({
-      user,
-      id: todoid,
-    })
-      .update({ complete }, ["complete", "id"])
+      .where({
+        user,
+        id: todoid,
+      })
+      .update({ complete }, ['complete', 'id'])
       .then(([results]) => {
         if (!results) {
           res.status(403).send('Sorry todo not found')
@@ -140,7 +140,7 @@ todoRoutes.delete('/:user/:todoid', (req, res) => {
       if (result === 0) {
         return res.status(404).send('unable to delete todo')
       } else {
-        res.redirect(303, `/todos/${user}`)
+        res.send({ id: todoid })
       }
     })
     .catch((e) => res.send(e))

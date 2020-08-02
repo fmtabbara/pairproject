@@ -1,4 +1,5 @@
-import React, { useContext, useEffect } from 'react'
+import React from 'react'
+import CloseIcon from '@material-ui/icons/Close'
 
 import clsx from 'clsx'
 import {
@@ -8,9 +9,11 @@ import {
   Typography,
   makeStyles,
   CardActions,
+  CardHeader,
+  IconButton,
 } from '@material-ui/core'
 
-import {useFetch} from '../../hooks/useFetch'
+import { useFetch } from '../../hooks/useFetch'
 import { AuthContext } from '../../global/auth/context'
 
 const useStyles = makeStyles((theme) => ({
@@ -63,31 +66,40 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-
-
-
-export const Todo = ({ id, name, description, complete, onComplete }) => {
+export const Todo = ({ id, name, complete, onComplete, onDelete }) => {
   const classes = useStyles()
 
   return (
     <Card classes={{ root: classes.root }} variant="outlined">
-      <CardActions>
-        <Checkbox
-          onChange={(e) => onComplete(id, e.target.checked)}
-          checked={complete}
-          className={classes.checkbox}
-          icon={<span className={classes.icon} />}
-          checkedIcon={
-            <span className={clsx(classes.icon, classes.checkedIcon)} />
-          }
-        />
-      </CardActions>
-      <CardContent className={classes.content}>
-        <Typography style={complete ? {textDecoration: "line-through", opacity: 0.3 } : {}} variant="h6">{name}</Typography>
-        <Typography variant="caption" style={{ color: '#888' }}>
-          {description}
-        </Typography>
-      </CardContent>
+      <CardHeader
+        style={{ width: '100%' }}
+        avatar={
+          <Checkbox
+            onChange={(e) => onComplete(id, e.target.checked)}
+            checked={complete}
+            className={classes.checkbox}
+            icon={<span className={classes.icon} />}
+            checkedIcon={
+              <span className={clsx(classes.icon, classes.checkedIcon)} />
+            }
+          />
+        }
+        action={
+          <IconButton onClick={() => onDelete(id)}>
+            <CloseIcon />
+          </IconButton>
+        }
+        title={
+          <Typography
+            style={
+              complete ? { textDecoration: 'line-through', opacity: 0.3 } : {}
+            }
+            variant="h6"
+          >
+            {name}
+          </Typography>
+        }
+      />
     </Card>
   )
 }

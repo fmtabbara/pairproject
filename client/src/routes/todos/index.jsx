@@ -33,6 +33,8 @@ export const Todos = () => {
 
   const { fetch: fetchComplete, results: completeResults } = useFetch()
 
+  const { fetch: fetchDelete, results: deleteResults } = useFetch()
+
   const handleComplete = (id, complete) => {
     fetchComplete(`/todos/${currentUser}/${id}/complete`, {
       method: 'PATCH',
@@ -40,12 +42,29 @@ export const Todos = () => {
     })
   }
 
+  const handleDelete = (id) => {
+    fetchDelete(`/todos/${currentUser}/${id}`, {
+      method: 'DELETE',
+    })
+  }
+
   useEffect(() => {
     if (completeResults) {
-      const updatedTodos = todos.map((todo) => todo.id === completeResults.id ? {...todo, complete: completeResults.complete} : todo)
+      const updatedTodos = todos.map((todo) =>
+        todo.id === completeResults.id
+          ? { ...todo, complete: completeResults.complete }
+          : todo
+      )
       setTodos(updatedTodos)
     }
   }, [completeResults])
+
+  useEffect(() => {
+    if (deleteResults) {
+      const updatedTodos = todos.filter((todo) => todo.id !== deleteResults.id)
+      setTodos(updatedTodos)
+    }
+  }, [deleteResults])
 
   useEffect(() => {
     if (results) {
@@ -53,27 +72,30 @@ export const Todos = () => {
     }
   }, [results])
 
-
   useEffect(() => {
     if (currentUser) {
       fetch(`/todos/${currentUser}`)
     }
   }, [])
 
-
   return (
     <Page>
       {loading ? (
         <Loading />
       ) : token ? (
-        <div className="App">
+        <div
+          style={{
+            textAlign: 'center',
+            width: '100%',
+          }}
+        >
           {todos.map((todo) => (
             <Todo
-            onComplete={handleComplete}
+              onComplete={handleComplete}
+              onDelete={handleDelete}
               id={todo.id}
               key={todo.id}
               name={todo.name}
-              description={todo.name}
               complete={todo.complete}
             />
           ))}
