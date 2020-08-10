@@ -21,7 +21,6 @@ export const Todos = () => {
   const { token, currentUser } = useContext(AuthContext)
   const [todos, setTodos] = useState([])
   const [newTodo, setNewTodo] = useState('')
-  const [todos, isComplete] = useState([])
 
   const addNewTodo = () => {
     fetch(`/todos/${currentUser}`, {
@@ -42,73 +41,74 @@ export const Todos = () => {
 
   useEffect(() => {
     if (currentUser) {
-      fetch(`/todos/${currentUser}/complete`)
+      fetch(`/todos/${currentUser}`)
     }
   }, [])
 
-  // this is added:
+  const { fetch: fetchComplete, results: completeResults } = useFetch()
 
-  const handleOnChange = (e) => {
-    const isComplete = () =>
-      fetch('todos/${currentUser}', {
-        method: 'PATCH',
-        body: JSON.stringify({ complete: true }),
-      })
-
-    const { results, onChange, loading, fetch } = useFetch()
-
-    useEffect(() => {
-      if (isComplete) {
-        setTodos([...results])  , //need to change this to get an array back without completed todos. (remove the completed todo from the list)
-      }
-    }, [results])
-    console.log(results)
-
-    useEffect(() => {
-      if (currentUser) {
-        fetch(`/todos/${currentUser}/complete`)
-      }
-    }, [])
-
-    // above added
-
-    return (
-      <Page>
-        {loading ? (
-          <Loading />
-        ) : token ? (
-          <div className="App">
-            {todos.map((todo, index) => (
-              <Todo
-                key={index}
-                name={todo.name}
-                description={todo.name}
-                complete={false}
-              />
-            ))}
-            <FormControl
-              style={{
-                margin: theme.spacing(0.5),
-              }}
-            >
-              <TextField
-                style={{
-                  marginBottom: theme.spacing(1),
-                }}
-                value={newTodo}
-                onChange={(e) => setNewTodo(e.target.value)}
-                variant="outlined"
-                size="small"
-              />
-              <Button onClick={addNewTodo}>Add</Button>
-            </FormControl>
-          </div>
-        ) : (
-          <div>
-            You need to <Link to="/login">login</Link> to see your todos
-          </div>
-        )}
-      </Page>
-    )
+  const handleComplete = (id, complete) => {
+    fetchComplete(`/todos/${currentUser}/${id}/complete`, {
+      method: 'PATCH',
+      body: JSON.stringify({ complete }),
+    })
   }
+
+  useEffect(() => {
+    if (completeResults) {
+      const updatedTodos = todos.map((todo) =>
+        todo.id === completeResults.id
+          ? { ...todo, complete: completeResults.complete }
+          : todo
+      )
+      setTodos(updatedTodos)
+    }
+  }, [completeResults])
+
+  useEffect(() => {
+    if (results) {
+      setTodos([...results])
+    }
+  }, [results])
+
+  return (
+    <Page>
+      {loading ? (
+        <Loading />
+      ) : token ? (
+        <div className="App">
+          {todos.map((todo) => (
+            <Todo
+              onComplete={handleComplete}
+              id={todo.id}
+              key={todo.id}
+              name={todo.name}
+              description={todo.name}
+              complete={todo.complete}
+            />
+          ))}
+          <FormControl
+            style={{
+              margin: theme.spacing(0.5),
+            }}
+          >
+            <TextField
+              style={{
+                marginBottom: theme.spacing(1),
+              }}
+              value={newTodo}
+              onChange={(e) => setNewTodo(e.target.value)}
+              variant="outlined"
+              size="small"
+            />
+            <Button onClick={addNewTodo}>Add</Button>
+          </FormControl>
+        </div>
+      ) : (
+        <div>
+          You need to <Link to="/login">login</Link> to see your todos
+        </div>
+      )}
+    </Page>
+  )
 }

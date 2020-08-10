@@ -106,16 +106,16 @@ todoRoutes.patch('/:user/:todoid/complete', (req, res) => {
 
   if (isValid) {
     db('todos')
-      .update({ complete })
       .where({
         user,
         id: todoid,
       })
-      .then((results) => {
-        if (results === 0) {
+      .update({ complete }, ['complete', 'id'])
+      .then(([results]) => {
+        if (!results) {
           res.status(403).send('Sorry todo not found')
         } else {
-          res.redirect(303, `/todos/${user}`)
+          res.send(results)
         }
       })
       .catch((e) => res.status(400).send(e))
