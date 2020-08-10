@@ -11,6 +11,7 @@ import {
   Button,
   FormControl,
   ThemeProvider,
+  Checkbox,
 } from '@material-ui/core'
 import { useTheme } from '@material-ui/styles'
 
@@ -44,18 +45,46 @@ export const Todos = () => {
     }
   }, [])
 
+  const { fetch: fetchComplete, results: completeResults } = useFetch()
+
+  const handleComplete = (id, complete) => {
+    fetchComplete(`/todos/${currentUser}/${id}/complete`, {
+      method: 'PATCH',
+      body: JSON.stringify({ complete }),
+    })
+  }
+
+  useEffect(() => {
+    if (completeResults) {
+      const updatedTodos = todos.map((todo) =>
+        todo.id === completeResults.id
+          ? { ...todo, complete: completeResults.complete }
+          : todo
+      )
+      setTodos(updatedTodos)
+    }
+  }, [completeResults])
+
+  useEffect(() => {
+    if (results) {
+      setTodos([...results])
+    }
+  }, [results])
+
   return (
     <Page>
       {loading ? (
         <Loading />
       ) : token ? (
         <div className="App">
-          {todos.map((todo, index) => (
+          {todos.map((todo) => (
             <Todo
-              key={index}
+              onComplete={handleComplete}
+              id={todo.id}
+              key={todo.id}
               name={todo.name}
               description={todo.name}
-              complete={false}
+              complete={todo.complete}
             />
           ))}
           <FormControl
