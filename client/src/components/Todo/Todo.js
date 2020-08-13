@@ -90,6 +90,15 @@ export const Todo = ({ id, name, description, complete, onComplete }) => {
         <Typography variant="caption" style={{ color: '#888' }}>
           {description}
         </Typography>
+        <button
+          onClick={(e) => deleteTodo(id, e.target.click)}
+          click={onClick}
+          type="button"
+        >
+          Delete
+        </button>
+        onClick={handleDelete}
+        delete={todo.delete}
       </CardContent>
     </Card>
   )

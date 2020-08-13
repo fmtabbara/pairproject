@@ -71,6 +71,30 @@ export const Todos = () => {
     }
   }, [results])
 
+  const { fetch: fetchDelete, results: deleteResults } = useFetch()
+
+  const handleDelete = (id, onClick) =>
+    fetchDelete(`/todos/${currentUser}/${id}`, {
+      method: 'DELETE',
+    })
+
+  useEffect(() => {
+    if (deleteResults) {
+      const updatedTodos = todos.map((todo) =>
+        todo.id === deleteResults.id
+          ? { ...todo, delete: deleteResults.delete }
+          : todo
+      )
+      setTodos(updatedTodos)
+    }
+  }, [deleteResults])
+
+  useEffect(() => {
+    if (results) {
+      setTodos([...results])
+    }
+  }, [results])
+
   return (
     <Page>
       {loading ? (
@@ -79,6 +103,7 @@ export const Todos = () => {
         <div className="App">
           {todos.map((todo) => (
             <Todo
+              onClick={handleDelete}
               onComplete={handleComplete}
               id={todo.id}
               key={todo.id}
