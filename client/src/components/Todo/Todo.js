@@ -63,7 +63,15 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export const Todo = ({ id, name, description, complete, onComplete }) => {
+export const Todo = ({
+  id,
+  name,
+  description,
+  complete,
+  onComplete,
+  onDelete,
+  onClick,
+}) => {
   const classes = useStyles()
   return (
     <Card classes={{ root: classes.root }} variant="outlined">
@@ -91,14 +99,12 @@ export const Todo = ({ id, name, description, complete, onComplete }) => {
           {description}
         </Typography>
         <button
-          onClick={(e) => deleteTodo(id, e.target.click)}
+          onClick={(e) => onDelete(id, e.target.click)}
           click={onClick}
           type="button"
         >
           Delete
         </button>
-        onClick={handleDelete}
-        delete={todo.delete}
       </CardContent>
     </Card>
   )

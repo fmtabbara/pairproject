@@ -73,7 +73,7 @@ export const Todos = () => {
 
   const { fetch: fetchDelete, results: deleteResults } = useFetch()
 
-  const handleDelete = (id, onClick) =>
+  const handleDelete = (id) =>
     fetchDelete(`/todos/${currentUser}/${id}`, {
       method: 'DELETE',
     })
@@ -87,7 +87,7 @@ export const Todos = () => {
       )
       setTodos(updatedTodos)
     }
-  }, [deleteResults])
+  }, [])
 
   useEffect(() => {
     if (results) {
@@ -103,7 +103,7 @@ export const Todos = () => {
         <div className="App">
           {todos.map((todo) => (
             <Todo
-              onClick={handleDelete}
+              onDelete={handleDelete}
               onComplete={handleComplete}
               id={todo.id}
               key={todo.id}
