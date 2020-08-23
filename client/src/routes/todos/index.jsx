@@ -80,14 +80,20 @@ export const Todos = () => {
 
   useEffect(() => {
     if (deleteResults) {
-      const updatedTodos = todos.map((todo) =>
-        todo.id === deleteResults.id
-          ? { ...todo, delete: deleteResults.delete }
-          : todo
+      const updatedTodos = todos.split((todoid) =>
+        todoid.id === deleteResults.id
+          ? { ...todoid, delete: deleteResults.delete }
+          : todoid
       )
       setTodos(updatedTodos)
     }
   }, [])
+
+  // const removeTodo = index => {
+  //    const newTodos = [...todos];
+  //    newTodos.splice(index, 1);
+  //    setTodos(newTodos);
+  //  };
 
   useEffect(() => {
     if (results) {
