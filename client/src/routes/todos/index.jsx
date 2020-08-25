@@ -6,13 +6,7 @@ import { Link } from 'react-router-dom'
 import { Loading } from '../../components/loading/loading'
 import { Page } from '../../components/page'
 import { useFetch } from '../../hooks/useFetch'
-import {
-  TextField,
-  Button,
-  FormControl,
-  ThemeProvider,
-  Checkbox,
-} from '@material-ui/core'
+import { TextField, Button, FormControl } from '@material-ui/core'
 import { useTheme } from '@material-ui/styles'
 
 export const Todos = () => {
@@ -30,14 +24,13 @@ export const Todos = () => {
     setNewTodo('')
   }
 
-  const { results, error, loading, fetch } = useFetch()
+  const { results, loading, fetch } = useFetch()
 
   useEffect(() => {
     if (results) {
       setTodos([...results])
     }
   }, [results])
-  console.log(results)
 
   useEffect(() => {
     if (currentUser) {
@@ -65,18 +58,13 @@ export const Todos = () => {
     }
   }, [completeResults])
 
-  useEffect(() => {
-    if (results) {
-      setTodos([...results])
-    }
-  }, [results])
-
   const { fetch: fetchDelete, results: deleteResults } = useFetch()
 
-  const handleDelete = (id) =>
+  const handleDelete = (id) => {
     fetchDelete(`/todos/${currentUser}/${id}`, {
       method: 'DELETE',
     })
+  }
 
   useEffect(() => {
     if (deleteResults) {
@@ -87,7 +75,7 @@ export const Todos = () => {
       )
       setTodos(updatedTodos)
     }
-  }, [])
+  }, [deleteResults])
 
   // const removeTodo = index => {
   //    const newTodos = [...todos];

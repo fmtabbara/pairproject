@@ -129,18 +129,17 @@ todoRoutes.patch('/:user/:todoid/complete', (req, res) => {
 
 todoRoutes.delete('/:user/:todoid', (req, res) => {
   const { user, todoid } = req.params
-
   db('todos')
-    .del()
     .where({
       user,
       id: todoid,
     })
+    .del()
     .then((result) => {
-      if (result === 0) {
-        return res.status(404).send('unable to delete todo')
+      if (result === 1) {
+        res.send({ todoid })
       } else {
-        res.redirect(303, `/todos/${user}`)
+        return res.status(404).send('unable to delete todo')
       }
     })
     .catch((e) => res.send(e))
