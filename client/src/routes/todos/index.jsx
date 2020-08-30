@@ -58,7 +58,7 @@ export const Todos = () => {
     }
   }, [completeResults])
 
-  const { fetch: fetchDelete, results: deleteResults } = useFetch()
+  const { fetch: fetchDelete } = useFetch()
 
   const handleDelete = (id) => {
     fetchDelete(`/todos/${currentUser}/${id}`, {
@@ -66,28 +66,13 @@ export const Todos = () => {
     })
   }
 
-  useEffect(() => {
-    if (deleteResults) {
-      const updatedTodos = todos.split((todoid) =>
-        todoid.id === deleteResults.id
-          ? { ...todoid, delete: deleteResults.delete }
-          : todoid
-      )
-      setTodos(updatedTodos)
-    }
-  }, [deleteResults])
-
-  // const removeTodo = index => {
-  //    const newTodos = [...todos];
-  //    newTodos.splice(index, 1);
-  //    setTodos(newTodos);
-  //  };
+  const res = todos.findIndex((a) => a.id === 1)
 
   useEffect(() => {
-    if (results) {
-      setTodos([...results])
+    if (res) {
+      const updatedArray = todos.splice((res) => setTodos(updatedArray))
     }
-  }, [results])
+  }, [res])
 
   return (
     <Page>
