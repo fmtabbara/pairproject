@@ -8,6 +8,7 @@ import {
   Typography,
   makeStyles,
   CardActions,
+  Button,
 } from '@material-ui/core'
 
 import { useFetch } from '../../hooks/useFetch'
@@ -63,7 +64,14 @@ const useStyles = makeStyles((theme) => ({
   },
 }))
 
-export const Todo = ({ id, name, description, complete, onComplete }) => {
+export const Todo = ({
+  id,
+  name,
+  description,
+  complete,
+  onComplete,
+  onDelete,
+}) => {
   const classes = useStyles()
   return (
     <Card classes={{ root: classes.root }} variant="outlined">
@@ -90,6 +98,7 @@ export const Todo = ({ id, name, description, complete, onComplete }) => {
         <Typography variant="caption" style={{ color: '#888' }}>
           {description}
         </Typography>
+        <Button onClick={() => onDelete(id)}>Delete</Button>
       </CardContent>
     </Card>
   )

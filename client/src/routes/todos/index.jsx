@@ -6,13 +6,7 @@ import { Link } from 'react-router-dom'
 import { Loading } from '../../components/loading/loading'
 import { Page } from '../../components/page'
 import { useFetch } from '../../hooks/useFetch'
-import {
-  TextField,
-  Button,
-  FormControl,
-  ThemeProvider,
-  Checkbox,
-} from '@material-ui/core'
+import { TextField, Button, FormControl } from '@material-ui/core'
 import { useTheme } from '@material-ui/styles'
 
 export const Todos = () => {
@@ -30,14 +24,13 @@ export const Todos = () => {
     setNewTodo('')
   }
 
-  const { results, error, loading, fetch } = useFetch()
+  const { results, loading, fetch } = useFetch()
 
   useEffect(() => {
     if (results) {
       setTodos([...results])
     }
   }, [results])
-  console.log(results)
 
   useEffect(() => {
     if (currentUser) {
@@ -65,11 +58,30 @@ export const Todos = () => {
     }
   }, [completeResults])
 
+  // useFetch is going to return the function we need to make a request and also the results from that request
+  // I added results: deleteResults
+
+  const { fetch: fetchDelete, results: deleteResults } = useFetch()
+
+  const handleDelete = (id) => {
+    fetchDelete(`/todos/${currentUser}/${id}`, {
+      method: 'DELETE',
+    })
+  }
+
+  // we use useEffect to response to something that changes
+  // in this case we want to do something when we get back the deleteResults'
+  // deleteResults goes in the dependancy array of useEffect because that if what we are waiting on changes for
+  // deleteResults starts as undefined and when the server responds to our request to delete a todo deleteResults becomes
+  // the response which should be in the form {id: exampleId123}
+
   useEffect(() => {
-    if (results) {
-      setTodos([...results])
+    if (deleteResults) {
+      // if delete result is not undefined then run what's inside the if statement
+      const temp = todos.filter((a) => a.id !== deleteResults.id)
+      setTodos(temp)
     }
-  }, [results])
+  }, [deleteResults])
 
   return (
     <Page>
@@ -79,6 +91,7 @@ export const Todos = () => {
         <div className="App">
           {todos.map((todo) => (
             <Todo
+              onDelete={handleDelete}
               onComplete={handleComplete}
               id={todo.id}
               key={todo.id}
