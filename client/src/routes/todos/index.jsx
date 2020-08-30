@@ -78,11 +78,7 @@ export const Todos = () => {
   useEffect(() => {
     if (deleteResults) {
       // if delete result is not undefined then run what's inside the if statement
-
-      const index = todos.findIndex((a) => a.id === deleteResults)
-      const temp = [...todos]
-      // splice directly malipulates an array (it doesnt return a new one) so we create a new array from our todos array and use splice on that
-      temp.splice(index, 1)
+      const temp = todos.filter((a) => a.id !== deleteResults.id)
       setTodos(temp)
     }
   }, [deleteResults])

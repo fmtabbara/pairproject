@@ -134,10 +134,10 @@ todoRoutes.delete('/:user/:todoid', (req, res) => {
       user,
       id: todoid,
     })
-    .del(['id'])
+    .del('id')
     .then(([id]) => {
-      console.log(result)
-      if (result.length !== 0) {
+      console.log(id)
+      if (id) {
         res.send({ id })
       } else {
         return res.status(404).send('unable to delete todo')
