@@ -58,7 +58,10 @@ export const Todos = () => {
     }
   }, [completeResults])
 
-  const { fetch: fetchDelete } = useFetch()
+  // useFetch is going to return the function we need to make a request and also the results from that request
+  // I added results: deleteResults
+
+  const { fetch: fetchDelete, results: deleteResults } = useFetch()
 
   const handleDelete = (id) => {
     fetchDelete(`/todos/${currentUser}/${id}`, {
@@ -66,13 +69,23 @@ export const Todos = () => {
     })
   }
 
-  const res = todos.findIndex((a) => a.id === 1)
+  // we use useEffect to response to something that changes
+  // in this case we want to do something when we get back the deleteResults'
+  // deleteResults goes in the dependancy array of useEffect because that if what we are waiting on changes for
+  // deleteResults starts as undefined and when the server responds to our request to delete a todo deleteResults becomes
+  // the response which should be in the form {id: exampleId123}
 
   useEffect(() => {
-    if (res) {
-      const updatedArray = todos.splice((res) => setTodos(updatedArray))
+    if (deleteResults) {
+      // if delete result is not undefined then run what's inside the if statement
+
+      const index = todos.findIndex((a) => a.id === deleteResults)
+      const temp = [...todos]
+      // splice directly malipulates an array (it doesnt return a new one) so we create a new array from our todos array and use splice on that
+      temp.splice(index, 1)
+      setTodos(temp)
     }
-  }, [res])
+  }, [deleteResults])
 
   return (
     <Page>
