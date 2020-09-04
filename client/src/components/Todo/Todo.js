@@ -99,6 +99,8 @@ export const Todo = ({
           {description}
         </Typography>
         <Button onClick={() => onDelete(id)}>Delete</Button>
+        editMode === true ? <button>cancel</button> : <button>edit</button>
+        onClick={() => setEditMode(true)}
       </CardContent>
     </Card>
   )

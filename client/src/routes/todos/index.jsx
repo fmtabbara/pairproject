@@ -83,6 +83,26 @@ export const Todos = () => {
     }
   }, [deleteResults])
 
+  // this code is for editing a todo:
+
+  const { fetch: fetchEdit, results: editResults } = useFetch()
+
+  const handleEdit = (id, edit) => {
+    fetchEdit(`/todos/${currentUser}/${id}/edit`, {
+      method: 'PATCH',
+      body: JSON.stringify({ name: editedTodo }),
+    })
+  }
+
+  useEffect(() => {
+    if (editResults) {
+      const editTodos = todos.map((todo) =>
+        todo.id === editResults.id ? { ...todo, edit: editResults.edit } : todo
+      )
+      setTodos(editTodos)
+    }
+  }, [editResults])
+
   return (
     <Page>
       {loading ? (
@@ -91,6 +111,7 @@ export const Todos = () => {
         <div className="App">
           {todos.map((todo) => (
             <Todo
+              onEdit={handleEdit}
               onDelete={handleDelete}
               onComplete={handleComplete}
               id={todo.id}
