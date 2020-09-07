@@ -78,16 +78,16 @@ todoRoutes.patch('/:user/:todoid', (req, res) => {
 
   if (isValidName) {
     db('todos')
-      .update({ name })
       .where({
         user,
         id: todoid,
       })
-      .then((results) => {
-        if (results === 0) {
+      .update({ name }, ['name', 'id'])
+      .then(([results]) => {
+        if (!results) {
           res.status(403).send('Sorry todo not found')
         } else {
-          res.redirect(303, `/todos/${user}`)
+          res.send(results)
         }
       })
       .catch((e) => res.status(400).send(e))
@@ -136,7 +136,6 @@ todoRoutes.delete('/:user/:todoid', (req, res) => {
     })
     .del('id')
     .then(([id]) => {
-      console.log(id)
       if (id) {
         res.send({ id })
       } else {

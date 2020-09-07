@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react'
+import React, { useState } from 'react'
 
 import clsx from 'clsx'
 import {
@@ -9,21 +9,16 @@ import {
   makeStyles,
   CardActions,
   Button,
+  TextField,
+  CardHeader,
+  IconButton,
 } from '@material-ui/core'
-
-import { useFetch } from '../../hooks/useFetch'
-import { AuthContext } from '../../global/auth/context'
+import ClearIcon from '@material-ui/icons/Clear'
+import { Loading } from '../loading/loading'
 
 const useStyles = makeStyles((theme) => ({
-  root: {
-    display: 'flex',
-    alignItems: 'center',
-    margin: theme.spacing(0.5),
-    color: 'white',
-  },
   content: {
     display: 'flex',
-    flexDirection: 'column',
     alignItems: 'flex-start',
   },
   checkbox: {
@@ -67,41 +62,89 @@ const useStyles = makeStyles((theme) => ({
 export const Todo = ({
   id,
   name,
-  description,
   complete,
   onComplete,
   onDelete,
+  onEdit,
+  loading,
 }) => {
   const classes = useStyles()
+  const [editMode, setEditMode] = useState(false)
+  const [editField, setEditField] = useState(name)
   return (
-    <Card classes={{ root: classes.root }} variant="outlined">
-      <CardActions>
-        <Checkbox
-          onChange={(e) => onComplete(id, e.target.checked)}
-          checked={complete}
-          className={classes.checkbox}
-          icon={<span className={classes.icon} />}
-          checkedIcon={
-            <span className={clsx(classes.icon, classes.checkedIcon)} />
-          }
-        />
-      </CardActions>
-      <CardContent className={classes.content}>
-        <Typography
-          style={
-            complete ? { textDecoration: 'line-through', opacity: 0.3 } : {}
-          }
-          variant="h6"
-        >
-          {name}
-        </Typography>
-        <Typography variant="caption" style={{ color: '#888' }}>
-          {description}
-        </Typography>
-        <Button onClick={() => onDelete(id)}>Delete</Button>
-        editMode === true ? <button>cancel</button> : <button>edit</button>
-        onClick={() => setEditMode(true)}
-      </CardContent>
+    <Card variant="outlined">
+      <CardHeader
+        title={
+          editMode ? (
+            <TextField
+              autoFocus={editMode}
+              value={editField}
+              onChange={(e) => setEditField(e.target.value)}
+            />
+          ) : (
+            <Typography
+              style={
+                complete ? { textDecoration: 'line-through', opacity: 0.3 } : {}
+              }
+              variant="h6"
+            >
+              {name}
+            </Typography>
+          )
+        }
+        avatar={
+          <Checkbox
+            onChange={(e) => onComplete(id, e.target.checked)}
+            checked={complete}
+            className={classes.checkbox}
+            icon={<span className={classes.icon} />}
+            checkedIcon={
+              <span className={clsx(classes.icon, classes.checkedIcon)} />
+            }
+          />
+        }
+        action={
+          <IconButton onClick={() => onDelete(id)}>
+            <ClearIcon />
+          </IconButton>
+        }
+      />
+      {loading ? (
+        <Loading size="small" />
+      ) : (
+        <CardContent className={classes.content}>
+          {editMode ? (
+            <div style={{ display: 'flex' }}>
+              <Button
+                onClick={() => {
+                  setEditMode(false)
+                  setEditField(name)
+                }}
+              >
+                Cancel
+              </Button>
+              <Button
+                color="primary"
+                variant="contained"
+                onClick={() => {
+                  onEdit(id, editField)
+                  setEditMode(false)
+                }}
+              >
+                Save
+              </Button>
+            </div>
+          ) : (
+            <Button
+              onClick={() => {
+                setEditMode(true)
+              }}
+            >
+              Edit
+            </Button>
+          )}
+        </CardContent>
+      )}
     </Card>
   )
 }
