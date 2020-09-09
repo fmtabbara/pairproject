@@ -15,6 +15,13 @@ export const Todos = () => {
   const { token, currentUser } = useContext(AuthContext)
   const [todos, setTodos] = useState([])
   const [newTodo, setNewTodo] = useState('')
+  const [todosLoading, setTodosLoading] = useState([])
+
+  const handleAddLoadingTodos = (todoId) =>
+    setTodosLoading((ids) => [...ids, todoId])
+
+  const handleRemoveTodosLoading = (todoId) =>
+    setTodosLoading((ids) => ids.filter((id) => todoId !== id))
 
   const addNewTodo = () => {
     fetch(`/todos/${currentUser}`, {
@@ -41,6 +48,7 @@ export const Todos = () => {
   const { fetch: fetchComplete, results: completeResults } = useFetch()
 
   const handleComplete = (id, complete) => {
+    handleAddLoadingTodos(id)
     fetchComplete(`/todos/${currentUser}/${id}/complete`, {
       method: 'PATCH',
       body: JSON.stringify({ complete }),
@@ -55,6 +63,7 @@ export const Todos = () => {
           : todo
       )
       setTodos(updatedTodos)
+      handleRemoveTodosLoading(completeResults.id)
     }
   }, [completeResults])
 
@@ -64,6 +73,7 @@ export const Todos = () => {
   const { fetch: fetchDelete, results: deleteResults } = useFetch()
 
   const handleDelete = (id) => {
+    handleAddLoadingTodos(id)
     fetchDelete(`/todos/${currentUser}/${id}`, {
       method: 'DELETE',
     })
@@ -80,8 +90,31 @@ export const Todos = () => {
       // if delete result is not undefined then run what's inside the if statement
       const temp = todos.filter((a) => a.id !== deleteResults.id)
       setTodos(temp)
+      handleRemoveTodosLoading(deleteResults.id)
     }
   }, [deleteResults])
+
+  // this code is for editing a todo:
+
+  const { fetch: fetchEdit, results: editResults } = useFetch()
+
+  const handleEdit = (id, name) => {
+    handleAddLoadingTodos(id)
+    fetchEdit(`/todos/${currentUser}/${id}`, {
+      method: 'PATCH',
+      body: JSON.stringify({ name }),
+    })
+  }
+
+  useEffect(() => {
+    if (editResults) {
+      const editTodos = todos.map((todo) =>
+        todo.id === editResults.id ? { ...todo, ...editResults } : todo
+      )
+      setTodos(editTodos)
+      handleRemoveTodosLoading(editResults.id)
+    }
+  }, [editResults])
 
   return (
     <Page>
@@ -91,6 +124,7 @@ export const Todos = () => {
         <div className="App">
           {todos.map((todo) => (
             <Todo
+              onEdit={handleEdit}
               onDelete={handleDelete}
               onComplete={handleComplete}
               id={todo.id}
@@ -98,6 +132,7 @@ export const Todos = () => {
               name={todo.name}
               description={todo.name}
               complete={todo.complete}
+              loading={todosLoading.includes(todo.id)}
             />
           ))}
           <FormControl
