@@ -6,8 +6,26 @@ import { Link } from 'react-router-dom'
 import { Loading } from '../../components/loading/loading'
 import { Page } from '../../components/page'
 import { useFetch } from '../../hooks/useFetch'
-import { TextField, Button, FormControl } from '@material-ui/core'
+import { TextField, Button, FormControl, Typography } from '@material-ui/core'
 import { useTheme } from '@material-ui/styles'
+
+const LoadWithQuote = React.memo(() => {
+  const quotes = [
+    'Warp Speed!',
+    'Full steam ahead!',
+    "Let's do this!",
+    "Let's get ready to rumble!",
+    'Pedal to the metal',
+  ]
+  const randomNumber = Math.ceil(Math.random() * quotes.length - 1)
+
+  return (
+    <>
+      <Loading />
+      <Typography variant="h4">{quotes[randomNumber]}</Typography>
+    </>
+  )
+})
 
 export const Todos = () => {
   const theme = useTheme()
@@ -119,7 +137,16 @@ export const Todos = () => {
   return (
     <Page>
       {loading ? (
-        <Loading />
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
+          <LoadWithQuote />
+        </div>
       ) : token ? (
         <div className="App">
           {todos.map((todo) => (

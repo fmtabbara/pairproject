@@ -22,7 +22,7 @@ export const useFetch = () => {
         const json = await response.json()
         setResults(json)
         setError(false)
-        setLoading(false)
+        setTimeout(() => setLoading(false), 1500)
       } else {
         const json = await response.json()
         setError(json)

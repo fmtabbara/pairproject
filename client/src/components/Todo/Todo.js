@@ -12,6 +12,7 @@ import {
   TextField,
   CardHeader,
   IconButton,
+  Tooltip,
 } from '@material-ui/core'
 import ClearIcon from '@material-ui/icons/Clear'
 import { Loading } from '../loading/loading'
@@ -19,7 +20,11 @@ import { Loading } from '../loading/loading'
 const useStyles = makeStyles((theme) => ({
   content: {
     display: 'flex',
-    alignItems: 'flex-start',
+    justifyContent: 'flex-end',
+    padding: 0,
+    '&:last-child': {
+      paddingBottom: 0,
+    },
   },
   checkbox: {
     '&:hover': {},
@@ -72,79 +77,86 @@ export const Todo = ({
   const [editMode, setEditMode] = useState(false)
   const [editField, setEditField] = useState(name)
   return (
-    <Card variant="outlined">
-      <CardHeader
-        title={
-          editMode ? (
-            <TextField
-              autoFocus={editMode}
-              value={editField}
-              onChange={(e) => setEditField(e.target.value)}
-            />
-          ) : (
-            <Typography
-              style={
-                complete ? { textDecoration: 'line-through', opacity: 0.3 } : {}
-              }
-              variant="h6"
-            >
-              {name}
-            </Typography>
-          )
-        }
-        avatar={
-          <Checkbox
-            onChange={(e) => onComplete(id, e.target.checked)}
-            checked={complete}
-            className={classes.checkbox}
-            icon={<span className={classes.icon} />}
-            checkedIcon={
-              <span className={clsx(classes.icon, classes.checkedIcon)} />
-            }
-          />
-        }
-        action={
-          <IconButton onClick={() => onDelete(id)}>
-            <ClearIcon />
-          </IconButton>
-        }
-      />
+    <Card variant="outlined" style={{ margin: 4 }}>
       {loading ? (
         <Loading size="small" />
       ) : (
-        <CardContent className={classes.content}>
-          {editMode ? (
-            <div style={{ display: 'flex' }}>
-              <Button
-                onClick={() => {
-                  setEditMode(false)
-                  setEditField(name)
-                }}
+        <CardHeader
+          title={
+            editMode ? (
+              <TextField
+                autoFocus={editMode}
+                value={editField}
+                onChange={(e) => setEditField(e.target.value)}
+              />
+            ) : (
+              <Typography
+                style={
+                  complete
+                    ? { textDecoration: 'line-through', opacity: 0.3 }
+                    : {}
+                }
+                variant="h6"
               >
-                Cancel
-              </Button>
-              <Button
-                color="primary"
-                variant="contained"
-                onClick={() => {
-                  onEdit(id, editField)
-                  setEditMode(false)
-                }}
-              >
-                Save
-              </Button>
-            </div>
-          ) : (
-            <Button
-              onClick={() => {
-                setEditMode(true)
-              }}
-            >
-              Edit
-            </Button>
-          )}
-        </CardContent>
+                {name}
+              </Typography>
+            )
+          }
+          avatar={
+            <Checkbox
+              onChange={(e) => onComplete(id, e.target.checked)}
+              checked={complete}
+              className={classes.checkbox}
+              icon={<span className={classes.icon} />}
+              checkedIcon={
+                <span className={clsx(classes.icon, classes.checkedIcon)} />
+              }
+            />
+          }
+          action={
+            <IconButton onClick={() => onDelete(id)}>
+              <ClearIcon />
+            </IconButton>
+          }
+        />
       )}
+      <CardContent className={classes.content}>
+        <Tooltip title={complete ? "you can't edit a completed task" : ''}>
+          <CardActions>
+            {editMode ? (
+              <div style={{ display: 'flex' }}>
+                <Button
+                  onClick={() => {
+                    setEditMode(false)
+                    setEditField(name)
+                  }}
+                >
+                  Cancel
+                </Button>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  onClick={() => {
+                    onEdit(id, editField)
+                    setEditMode(false)
+                  }}
+                >
+                  Save
+                </Button>
+              </div>
+            ) : (
+              <Button
+                disabled={complete || loading}
+                onClick={() => {
+                  setEditMode(true)
+                }}
+              >
+                Edit
+              </Button>
+            )}
+          </CardActions>
+        </Tooltip>
+      </CardContent>
     </Card>
   )
 }
