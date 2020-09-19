@@ -149,6 +149,7 @@ export const Todos = () => {
         </div>
       ) : token ? (
         <div className="App">
+          <Button onClick={handleLogout}>logout</Button>
           {todos.map((todo) => (
             <Todo
               onEdit={handleEdit}

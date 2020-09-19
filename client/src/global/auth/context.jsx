@@ -5,12 +5,17 @@ import { useEffect } from 'react'
 
 export const AuthContext = createContext()
 
-export const AuthProvider = ({ children }) => {
-  const [token, setToken] = useState('123')
-  const [hasRegistered, setHasRegistered] = useState(false)
-  const [currentUser, setCurrentUser] = useState('fmtabbara')
 
+}
+
+export const AuthProvider = ({ children }) => {
+  const [token, setToken] = useState()
+  const [hasRegistered, setHasRegistered] = useState(false)
+  const [currentUser, setCurrentUser] = useState()
+ 
   const { results, fetch, error, loading } = useFetch()
+
+ 
 
   const handleLogin = async ({ username, password }) => {
     fetch('/login', {
@@ -26,11 +31,17 @@ export const AuthProvider = ({ children }) => {
     }
   }, [results])
 
+  const handleLogout = () => {
+    setCurrentUser(undefined)
+    setToken(undefined)
+  }
+
   return (
     <AuthContext.Provider
       value={{
         token,
         handleLogin,
+        handleLogout,
         error,
         loading,
         setHasRegistered,
