@@ -30,7 +30,7 @@ const LoadWithQuote = React.memo(() => {
 export const Todos = () => {
   const theme = useTheme()
 
-  const { token, currentUser } = useContext(AuthContext)
+  const { token, currentUser, handleLogout } = useContext(AuthContext)
   const [todos, setTodos] = useState([])
   const [newTodo, setNewTodo] = useState('')
   const [todosLoading, setTodosLoading] = useState([])
